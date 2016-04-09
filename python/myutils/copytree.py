@@ -4,7 +4,7 @@ from printcolor import printc
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def copySingleFile(whereToLaunch,inputFile,outputFile,Acut):
+def copySingleFile(whereToLaunch,inputFile,outputFile,Acut,remove_branches):
         print 'inputFile',inputFile
         if ('pisa' in whereToLaunch):
           input = ROOT.TFile.Open(inputFile,'read')
@@ -29,6 +29,11 @@ def copySingleFile(whereToLaunch,inputFile,outputFile,Acut):
 
         inputTree = input.Get("tree")
         nEntries = inputTree.GetEntries()
+        for branch in remove_branches:
+          if branch and not branch.isspace():
+            # print 'DROPPING BRANCHES LIKE',str(branch)
+            inputTree.SetBranchStatus(str(branch), ROOT.kFALSE);
+
         output.cd()
         print '\n\t copy file: %s with cut: %s' %(inputFile,Acut)
         outputTree = inputTree.CopyTree(Acut)
@@ -70,7 +75,8 @@ def copytree(pathIN,pathOUT,prefix,newprefix,folderName,Aprefix,Acut,config):
     folder_prefix = ''
     print "##### COPY TREE - BEGIN ######"
     whereToLaunch = config.get('Configuration','whereToLaunch')
-
+    remove_branches = config.get('General','remove_branches').replace("[","").replace("]","").replace("'","").split(',')
+    print 'remove_branches:',remove_branches,'len(remove_branches):',len(remove_branches)
 
     if('pisa' in whereToLaunch):
       for (dirpath_, dirnames, filenames_) in walk(pathIN+'/'+folderName):
@@ -122,7 +128,8 @@ def copytree(pathIN,pathOUT,prefix,newprefix,folderName,Aprefix,Acut,config):
         filename = filename.split('_')[0]+'_'+subfolder+'_'+filename.split('_')[1]
         if filename in filenames: continue
         filenames.append(filename)
-        outputFile = "%s/%s/%s" %(pathOUT,folderName,filename.replace('.root','')+'_'+id_generator()+'.root')
+#        outputFile = "%s/%s/%s" %(pathOUT,folderName,filename.replace('.root','')+'_'+id_generator()+'.root')
+        outputFile = "%s/%s/%s" %(pathOUT,folderName,filename.replace('.root','')+'.root')
         # print 'inputFile',inputFile,'outputFile',outputFile
         if('PSI' in whereToLaunch):
           del_protocol = outputFile
@@ -146,7 +153,7 @@ def copytree(pathIN,pathOUT,prefix,newprefix,folderName,Aprefix,Acut,config):
             print(command)
             subprocess.call([command], shell=True)
           else: print 'FALSE'
-        inputs.append((whereToLaunch,inputFile,outputFile,Acut))
+        inputs.append((whereToLaunch,inputFile,outputFile,Acut,remove_branches))
 
     ## process the input list (using multiprocess)
     multiprocess=int(config.get('Configuration','nprocesses'))
@@ -154,7 +161,7 @@ def copytree(pathIN,pathOUT,prefix,newprefix,folderName,Aprefix,Acut,config):
     if multiprocess>1:
         from multiprocessing import Pool
         p = Pool(multiprocess)
-        outputs = p.map(copySingleFileOneInput, inputs)
+        outputs = p.map(copySingleFileOneInput,inputs)
     else:
         for input_ in inputs:
                 output = copySingleFileOneInput(input_)
@@ -179,7 +186,7 @@ def copytree(pathIN,pathOUT,prefix,newprefix,folderName,Aprefix,Acut,config):
       print command
       subprocess.call([command], shell = True)
       #else: print 'Does not exist'
-      t = ROOT.TFileMerger()
+      t = ROOT.TFileMerger(ROOT.kFalse)
       t.OutputFile(pathOUT+'/'+newprefix+folderName+".root ", "CREATE")
       print 'outputFolder is', outputFolder 
       for file in os.listdir(outputFolder.replace('root://t3dcachedb03.psi.ch:1094','').replace('gsidcap://t3se01.psi.ch:22128/','').replace('dcap://t3se01.psi.ch:22125/','')):

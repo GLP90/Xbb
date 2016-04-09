@@ -107,7 +107,7 @@ class ParseInfo:
             sample = self.checkSplittedSample(_sample)#Check if is splitted and remove the _
             if not config.has_option(sample,'sampleName'): continue #Check if the sample has the infile parameter. If not skip
             infile = _sample
-            print 'infile',infile
+            # print 'infile',infile
             sampleName = config.get(sample,'sampleName')
             
             check_correspondency(sample,self._list,config)#Check if the sample exists, not fully understood yet                    

@@ -26,6 +26,7 @@ mkdir $envFolder'/Fake'$QCDHT700
 mkdir $envFolder'/Fake'$QCDHT1000
 mkdir $envFolder'/Fake'$QCDHT1500
 mkdir $envFolder'/Fake'$QCDHT2000
+mkdir $envFolder'/FakeQCDTest/'
 
 python launchFakeMET.py $source_/$QCDHT100  $envFolder'/Fake'$QCDHT100'/'     >& logFakeQCDHT100 &
 python launchFakeMET.py $source_/$QCDHT200  $envFolder'/Fake'$QCDHT200'/'     >& logFakeQCDHT200 &
@@ -36,5 +37,6 @@ python launchFakeMET.py $source_/$QCDHT1000 $envFolder'/Fake'$QCDHT1000'/'    >&
 python launchFakeMET.py $source_/$QCDHT1500 $envFolder'/Fake'$QCDHT1500'/'    >& logFakeQCDHT1500 &
 python launchFakeMET.py $source_/$QCDHT2000 $envFolder'/Fake'$QCDHT2000'/'    >& logFakeQCDHT2000 &
 
+python launchFakeMET.py $source_/$QCDHT500 $envFolder'/FakeQCDTest/'    >& logFakeQCDTest &
 
 

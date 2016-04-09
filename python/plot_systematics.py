@@ -73,7 +73,8 @@ for mass in masses:
                 #input = TFile.Open()
 
                 #input = TFile.Open(path+'vhbb_TH_ZmmLowPt_13TeV.root','read')
-                input = TFile.Open(path+'vhbb_TH_ZmmHighPt_13TeV.root','read')
+                #input = TFile.Open(path+'vhbb_TH_ZmmHighPt_13TeV.root','read')
+                input = TFile.Open(path+'vhbb_TH_ZmmBDT_SCAN_NTrees_100_nEventsMin_400_Zmm_highVpt.root','read')
             if mode == 'Mjj':
                 input = TFile.Open(path+'/vhbb_TH_Mjj_'+Abin+'_M'+mass+'_'+channel+'.root','read')
 

@@ -1,8 +1,7 @@
 import ROOT
-from ROOT import TStyle
 
 def tdrStyle():
-  tdrStyle = TStyle("tdrStyle","Style for P-TDR")
+  tdrStyle = ROOT.TStyle("tdrStyle","Style for P-TDR")
 
 # For the canvas:
   tdrStyle.SetCanvasBorderMode(0) 

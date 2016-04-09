@@ -3,8 +3,9 @@ from array import *
 from math import *
 import copy
 
-precut  = 50
-cut     = 130
+maxEvents = -1
+precut  = 80
+cut     = 120
 gROOT.SetBatch()
 
 range_ = 500
@@ -168,7 +169,7 @@ def redoJetArray(old_tree,idx,nJet,nhJCidx,naJCidx):
     warning =False
     for CSV,i in CSVs:
 #        print count,i
-        if hJCidx<old_tree.nhJCidx and hJCidx<2 and old_tree.Jet_pt[i]>20 and old_tree.Jet_puId[i]==1:
+        if old_tree.Jet_pt[i]>20 and old_tree.Jet_puId[i]==1 and hJCidx<old_tree.nhJCidx and hJCidx<2:
             old_tree.hJCidx[hJCidx] = i
             hJCidx+=1
         elif aJCidx<old_tree.naJCidx:
@@ -335,7 +336,8 @@ def newPt(GenJet_wNuPt,Jet_pt,Jet_phi,met_pt,met_phi,function,cut):
     rdm_min = 0
     rdm_max = 0
     ### FIXME ####
-    while(newMet_pt_squared < cut**2 and count<2):
+#    while(newMet_pt_squared < cut**2 and count<2):
+    while(newMet_pt_squared < cut**2 and count<20):
         count+=1
         rdm = function.GetRandom()
 #        while rdm*sign<0:
@@ -375,9 +377,9 @@ def correctMet(met_pt,met_phi,Jet_pt,Jet_phi,Jet_ptNew):
 
 #file_ = TFile("tree_100_QCDHT300.root")
 
-def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=None):
+def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=None,expoRatio=None):
 
-    if function is None:
+    if function is None or expoRatio is None:
         c1              = TCanvas()
         chainN          = fileName
         chainN          = fileName.split("/tree_")[0]+"/tree_*.root"
@@ -401,10 +403,57 @@ def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=Non
         print "Fitting function in: ",chainN
 #        chain.Draw(" (Jet_pt-GenJet_wNuPt[Jet_mcIdx])  >> histo(1000,%d,%d)"%(-range_,range_),"Jet_mcIdx>=0 && MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]) && (met_pt > %d) "%precut,"NORM")
 #        chain.Draw(" log(Jet_pt/GenJet_wNuPt[Jet_mcIdx])  >> histo(1000,%d,%d)"%(-range_,range_),"abs(Jet_eta)<2.6 && GenJet_wNuPt[Jet_mcIdx]>20 && Jet_id>=3 && Jet_puId==1 && (met_pt > %d) && Jet_mcIdx>=0 && abs(Jet_eta)<2.6 && Jet_pt>20 && Jet_id>=3 && Jet_puId==1 && abs(Jet_eta[1])<2.6 && Jet_id[1]>=3 && Jet_puId[1]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && Jet_id[hJCidx[1]]>=3  && Jet_puId[hJCidx[1]]==1 && (MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]))"%cut,"NORM")
-        chain.Draw(" (Jet_pt-GenJet_wNuPt[Jet_mcIdx])  >> histo(1000,%d,%d)"%(-range_,range_),"(met_pt > %d) && (mhtJet30 > %d) && abs(Jet_eta)<2.6 && Jet_id>=3 && Jet_puId==1 && Jet_mcIdx>=0 && abs(Jet_eta[1])<2.6 && Jet_id[1]>=3 && Jet_puId[1]==1 && abs(Jet_eta[0])<2.6 && Jet_id[0]>=3 && Jet_puId[0]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && Jet_id[hJCidx[1]]>=3  && Jet_puId[hJCidx[1]]==1 && (MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]))"%(cut,cut),"NORM")
+        chain.Draw(" (Jet_pt-GenJet_wNuPt[Jet_mcIdx])  >> histo(1000,%d,%d)"%(-range_,range_),"(met_pt > %d) && (mhtJet30 > %d) && nhJCidx>=2 && abs(Jet_eta[hJCidx[0]])<2.6 && abs(Jet_eta[hJCidx[1]])<2.6 && Jet_pt[hJCidx[0]]>20 && Jet_pt[hJCidx[1]]>20 && Jet_id[hJCidx[1]]>=3 && Jet_puId[hJCidx[1]]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && abs(Jet_eta[0])<2.6 && Jet_id[0]>=3 && Jet_puId[0]==1 && json && Flag_hbheFilterNew  &&Flag_hbheIsoFilter &&Flag_CSCTightHaloFilter &&Flag_eeBadScFilter && Flag_goodVertices && (MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]))"%(precut,precut),"NORM")
+#        chain.Draw(" (Jet_pt-GenJet_wNuPt[Jet_mcIdx])  >> histo(1000,%d,%d)"%(-range_,range_),"(met_pt > %d) && (mhtJet30 > %d) && nhJCidx>=2 && abs(Jet_eta[hJCidx[0]])<2.6 && abs(Jet_eta[hJCidx[1]])<2.6 && Jet_pt[hJCidx[0]]>20 && Jet_pt[hJCidx[1]]>20 && Jet_id[hJCidx[1]]>=3 && Jet_puId[hJCidx[1]]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && abs(Jet_eta[0])<2.6 && Jet_id[0]>=3 && Jet_puId[0]==1 && json && Flag_hbheFilterNew  &&Flag_hbheIsoFilter &&Flag_CSCTightHaloFilter &&Flag_eeBadScFilter && Flag_goodVertices && (MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]))"%(precut,precut),"NORM")
+#        && HCSV_reg_pt>90 && nhJCidx>=2 && Jet_btagCSV[hJCidx[1]]>0.460 && abs(Jet_eta[hJCidx[0]])<2.6 && abs(Jet_eta[hJCidx[1]])<2.6 && Jet_pt[hJCidx[0]]>20 && Jet_pt[hJCidx[1]]>20 && Jet_id[hJCidx[1]]>=3 && Jet_puId[hJCidx[1]]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && abs(Jet_eta[0])<2.6 && Jet_id[0]>=3 && Jet_puId[0]==1 && HLT_BIT_HLT_PFMET90_PFMHT90_IDTight_v && json && Flag_hbheFilterNew  &&Flag_hbheIsoFilter &&Flag_CSCTightHaloFilter &&Flag_eeBadScFilter && Flag_goodVertices && abs(TVector2::Phi_mpi_pi(HCSV_phi-met_phi))>1.57
 #        chain.Draw(" (Jet_pt-GenJet_wNuPt[Jet_mcIdx])  >> histo(1000,%d,%d)"%(-range_,range_),"(met_pt > %d) Jet_mcIdx>=0 && MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]) &&  && (HCSV_pt>50 && Jet_btagCSV[hJCidx[1]]>0.4 && HCSV_mass<500 && HCSV_mass>0 && abs(TVector2::Phi_mpi_pi(HCSV_phi-met_phi))>0.7 && abs(Jet_eta)<2.6 && Jet_pt>20 && Jet_id>=3 && Jet_puId==1 && abs(Jet_eta[1])<2.6 && Jet_id[1]>=3 && Jet_puId[1]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && Jet_id[hJCidx[1]]>=3  && Jet_puId[hJCidx[1]]==1)"%precut,"NORM")
 
         histo = gDirectory.Get("histo")
+
+        c1.SetLogy()
+        c1.SaveAs(outName.replace(".root","_fit.png"))
+        c1.SaveAs(outName.replace(".root","_fit.C"))
+
+        chain.Draw(" lheHT >> lheHighMET(40)","(met_pt > %d) && (mhtJet30 > %d) && nhJCidx>=2 && abs(Jet_eta[hJCidx[0]])<2.6 && abs(Jet_eta[hJCidx[1]])<2.6 && Jet_pt[hJCidx[0]]>20 && Jet_pt[hJCidx[1]]>20 && Jet_id[hJCidx[1]]>=3 && Jet_puId[hJCidx[1]]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && abs(Jet_eta[0])<2.6 && Jet_id[0]>=3 && Jet_puId[0]==1 && json && Flag_hbheFilterNew  &&Flag_hbheIsoFilter &&Flag_CSCTightHaloFilter &&Flag_eeBadScFilter && Flag_goodVertices && (MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]))"%(cut,cut),"NORM")
+        lheHighMET = gDirectory.Get("lheHighMET")
+        xmin = lheHighMET.GetXaxis().GetXmin()+2*lheHighMET.GetXaxis().GetBinWidth(3)
+        xmax = lheHighMET.GetXaxis().GetXmax()-2*lheHighMET.GetXaxis().GetBinWidth(3)
+        expoHighMET = TF1("expoHighMET","expo",xmin,xmax)
+        lheHighMET.Fit(expoHighMET,"","",xmin,xmax)
+
+        c1.SetLogy()
+        c1.SaveAs(outName.replace(".root","_fit2.png"))
+        c1.SaveAs(outName.replace(".root","_fit2.C"))
+
+        chain.Draw(" lheHT >> lheLowMET(40)","(met_pt > %d) && (mhtJet30 > %d) && !((met_pt > %d) && (mhtJet30 > %d)) && nhJCidx>=2 && abs(Jet_eta[hJCidx[0]])<2.6 && abs(Jet_eta[hJCidx[1]])<2.6 && Jet_pt[hJCidx[0]]>20 && Jet_pt[hJCidx[1]]>20 && Jet_id[hJCidx[1]]>=3 && Jet_puId[hJCidx[1]]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && abs(Jet_eta[0])<2.6 && Jet_id[0]>=3 && Jet_puId[0]==1 && json && Flag_hbheFilterNew  &&Flag_hbheIsoFilter &&Flag_CSCTightHaloFilter &&Flag_eeBadScFilter && Flag_goodVertices && (MaxIf$((abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx])),Jet_mcIdx>=0)==abs(Jet_pt-GenJet_wNuPt[Jet_mcIdx]))"%(precut,precut,cut,cut),"NORM")
+        lheLowMET = gDirectory.Get("lheLowMET")
+        expoLowMET = TF1("expoLowMET","expo",xmin,xmax)
+        lheLowMET.Fit(expoLowMET,"","",xmin,xmax)
+
+        xmin = (int(xmin+10)/100)*100
+        xmax = (int(xmax+10)/100)*100
+
+        print "xmin:",xmin
+        print "xmax:",xmax
+
+        c1.SetLogy()
+        c1.SaveAs(outName.replace(".root","_fit3.png"))
+        c1.SaveAs(outName.replace(".root","_fit3.C"))
+
+        expoRatio = TF1("expoRatio","[0]*exp([1]*x)",xmin,xmax)
+        ratioSlope = expoHighMET.GetParameter(1)-expoLowMET.GetParameter(1)
+        ratioNorm = 1
+        if ratioSlope>0:
+            ratioNorm = 1./exp(ratioSlope*xmax)
+        else:
+            ratioNorm = 1./exp(ratioSlope*xmin)
+        expoRatio.SetParameter(0,ratioNorm)
+        expoRatio.SetParameter(1,ratioSlope)
+
+        expoRatio.Draw()
+        c1.SetLogy(0)
+        c1.SaveAs(outName.replace(".root","_fit4.png"))
+        c1.SaveAs(outName.replace(".root","_fit4.C"))
 
 #        default=(0.015,0.027,0.094,0.0060,-0.050,0.15,0.00015,-0.13,0.44)
 #        function = smartFit(histo,default,"gaus(0)+gaus(3)+gaus(6)")
@@ -412,9 +461,6 @@ def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=Non
         import copy
         function = copy.deepcopy(histo)
 
-        c1.SetLogy()
-        c1.SaveAs(outName.replace(".root","_fit.png"))
-        c1.SaveAs(outName.replace(".root","_fit.C"))
 #        c1.SaveAs(outName.replace(".root","_fit.root"))
 #        chain.Delete()
 
@@ -493,6 +539,9 @@ def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=Non
     htJet30 = array('f',[0])
     tree.SetBranchAddress("htJet30",htJet30)
 
+    FakeMET_prob = array('f',[0])
+    tree.Branch('FakeMET_prob',FakeMET_prob,'FakeMET_prob/F')
+
     FakeMET_met = array('f',[0])
     tree.Branch('FakeMET_met',FakeMET_met,'FakeMET_met/F')
 
@@ -505,8 +554,8 @@ def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=Non
     FakeMET_jetPtNew = array('f',[0])
     tree.Branch('FakeMET_jetPtNew',FakeMET_jetPtNew,'FakeMET_jetPtNew/F')
 
-    HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old = array('f',[0])
-    tree.Branch("HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old",HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old,'HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old/F')
+    HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old = array('i',[0])
+    tree.Branch("HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old",HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old,'HLT_BIT_HLT_PFMET90_PFMHT90_IDLoose_old/I')
 
     FakeMET_jetIdx = array('i',[0])
     tree.Branch('FakeMET_jetIdx',FakeMET_jetIdx,'FakeMET_jetIdx/I')
@@ -519,20 +568,30 @@ def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=Non
 
     nEntries = old_tree.GetEntries()
 
+    random = TRandom3()
 #    formCut = TTreeFormula("formCut","(met_pt > %d) && (mhtJet30 > %d) && abs(Jet_eta[1])<2.6 && Jet_id[1]>=3 && Jet_puId[1]==1 && abs(Jet_eta[0])<2.6 && Jet_id[0]>=3 && Jet_puId[0]==1 && Jet_id[hJCidx[0]]>=3 && Jet_puId[hJCidx[0]]==1 && Jet_id[hJCidx[1]]>=3  && Jet_puId[hJCidx[1]]==1"%(precut,precut),old_tree)
     formCut = TTreeFormula("formCut","(met_pt > %d) && (mhtJet30 > %d) && nhJCidx>=2"%(precut,precut),old_tree)
     for entry in range(0,nEntries):
+        if entry%1000==0: print "entry: ",entry
+        if maxEvents>0 and entry>maxEvents: break
         old_tree.GetEntry(entry)
 #        print old_tree.nJet
 #        print nJet[0]
 #        print nJet
 #        print
+
+        FakeMET_prob[0] = 0
+        if (old_tree.met_pt>precut and old_tree.mhtJet30>precut) and not(old_tree.met_pt>cut and old_tree.mhtJet30>cut):
+            prob = expoRatio.Eval(old_tree.lheHT)
+            FakeMET_prob[0] = prob - 1
+#            if not random.Rndm() < prob:
+#                continue
+
         formCut.GetNdata()
         bit = formCut.EvalInstance()
 
         if not bit: continue
         if type(old_tree)!=TTree: continue
-    #    if entry>1000: break
         idx = 0
         idx                     = getJetIdx(old_tree.nJet,old_tree.nGenJet,old_tree.Jet_pt,old_tree.Jet_mcIdx,old_tree.GenJet_wNuPt,old_tree.GenJet_wNuEta)
         if idx>=old_tree.nJet or idx<0 or old_tree.Jet_mcIdx[idx]<0 or old_tree.Jet_mcIdx[idx]>=old_tree.nGenJet:
@@ -625,19 +684,27 @@ def doFile(fileName="tree_100_QCDHT700.root",outName="newTree.root",function=Non
     CountNegWeight.Write()
     FakeMET_count.Write()
     fileNew.Close()
-    return function
+    return function,expoRatio
 
 if __name__ == "__main__":
+    function = None
+    expoRatio = None
     f       = TFile("newTree_fit.root")
     function = f.Get("c1").GetPrimitive("histo")
-#    function = copy.copy(function)
+    function = copy.copy(function)
+    f4       = TFile("newTree_fit4.root")
+    expoRatio = f4.Get("c1").GetPrimitive("expoRatio")
+    expoRatio = copy.copy(expoRatio)
 #    fileName="/scratch/sdonato/VHbbRun2/V14_forPreApproval/CMSSW_7_1_5/src/Xbb/env/ZvvHighPt_V15_QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"
-    fileName="/gpfs/ddn/srm/cms/store/user/arizzi/VHBBHeppyV14//QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/VHBB_HEPPY_V14_QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8__RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/151024_181957/0000/tree_1.root"
+#    fileName="/scratch/sdonato/VHbbRun2/V20/CMSSW_7_1_5/src/Xbb/env_turnOnMET90/ZvvHighPt_V20_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"
+#    fileName="/scratch/sdonato/VHbbRun2/V20/CMSSW_7_1_5/src/Xbb/env_turnOnMET90/ZvvHighPt_V20_QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"
+    fileName="/scratch/sdonato/VHbbRun2/V20/CMSSW_7_1_5/src/Xbb/env_turnOnMET90/ZvvHighPt_V20_QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"
 #    fileName="/scratch/sdonato/VHbbRun2/V14_forPreApproval/CMSSW_7_1_5/src/Xbb/env/ZvvHighPt_V15_QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"
 #    fileName="/scratch/sdonato/VHbbRun2/V14_forPreApproval/CMSSW_7_1_5/src/Xbb/env/ZvvHighPt_V15_QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"
 #    fileName="/scratch/sdonato/VHbbRun2/V14_forPreApproval/CMSSW_7_1_5/src/Xbb/env/ZvvHighPt_V15_QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root"
 #    fileName="/gpfs/ddn/srm/cms/store/user/arizzi/VHBBHeppyV14//QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/VHBB_HEPPY_V14_QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8__RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/151025_083609/0000/tree_1.root"
     outName="newTree.root"
-    doFile(fileName,outName,function)
+    maxEvents = 1000
+    doFile(fileName,outName,function,expoRatio)
 
 

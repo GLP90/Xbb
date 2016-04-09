@@ -1,4 +1,3 @@
-
 Processing MET_distribution.C...
  FCN=403.623 FROM MIGRAD    STATUS=CONVERGED      64 CALLS          65 TOTAL
                      EDM=4.45884e-09    STRATEGY= 1      ERROR MATRIX ACCURATE
@@ -66,3 +65,39 @@ Fitting metType1p2Res
    3  Sigma        2.05614e+01   1.51165e-01  -3.18084e-06   4.22663e-02
 Info in <TCanvas::Print>: png file met_distributions.png has been created
 Info in <TCanvas::SaveSource>: C++ Macro file: met_distributions.C has been generated
+=======
+doFakeMET.py:536: RuntimeWarning: creating converter for unknown type "const char**"
+  bit = formCut.EvalInstance()
+[?1034hentry:  0
+entry:  1000
+entry:  2000
+entry:  3000
+entry:  4000
+entry:  5000
+entry:  6000
+entry:  7000
+entry:  8000
+entry:  9000
+entry:  10000
+entry:  11000
+entry:  12000
+entry:  13000
+entry:  14000
+entry:  15000
+entry:  16000
+entry:  17000
+entry:  18000
+entry:  19000
+entry:  20000
+entry:  21000
+entry:  22000
+entry:  23000
+entry:  24000
+entry:  25000
+entry:  26000
+entry:  27000
+entry:  28000
+entry:  29000
+entry:  30000
+entry:  31000
+entry:  32000

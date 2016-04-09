@@ -1,6 +1,7 @@
 from samplesclass import Sample
 from sample_parser import ParseInfo
 from copytree import copytree
+from copytreePSI import copytreePSI
 from StackMaker import StackMaker
 from HistoMaker import HistoMaker
 from progbar import progbar

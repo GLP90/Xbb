@@ -102,6 +102,15 @@ Datacardbin=config.get('dc:%s'%var,'dcBin')
 anType = config.get('dc:%s'%var,'type')
 setup=eval(config.get('LimitGeneral','setup'))
 
+import os
+if os.path.exists("../interface/DrawFunctions_C.so"):
+    print 'ROOT.gROOT.LoadMacro("../interface/DrawFunctions_C.so")'
+    ROOT.gROOT.LoadMacro("../interface/DrawFunctions_C.so")
+
+if os.path.exists("../interface/VHbbNameSpace_h.so"):
+    print 'ROOT.gROOT.LoadMacro("../interface/VHbbNameSpace_h.so")'
+    ROOT.gROOT.LoadMacro("../interface/VHbbNameSpace_h.so")
+
 print "Using",('dc:%s'%var,'var')
 print name
 print title
@@ -141,6 +150,7 @@ else:
     sys.exit()
 
 sys_cut_suffix=eval(config.get('LimitGeneral','sys_cut_suffix'))
+sys_weight_corr=eval(config.get('LimitGeneral','sys_weight_corr'))
 sys_cut_include=[]
 if config.has_option('LimitGeneral','sys_cut_include'):
     sys_cut_include=eval(config.get('LimitGeneral','sys_cut_include'))
@@ -275,6 +285,7 @@ _name = title
 _weight = weightF
 appendList()
 
+print "Using weightF:",weightF
 print 'Assign the systematics'
 print '======================\n'
 
@@ -297,10 +308,13 @@ for syst in systematics:
             _cut = treecut.replace(old_str,new_str.replace('?',Q))
             _name = title
             _weight = weightF
+        if syst in sys_weight_corr:
+            _weight = config.get('Weights',sys_weight_corr[syst]+'_%s' %(Q.upper()))
         #replace tree variable
         if bdt == True:
             #ff[1]='%s_%s'%(sys,Q.lower())
             _treevar = treevar.replace('.nominal','.%s_%s'%(syst,Q.lower()))
+            _treevar = treevar.replace('.Nominal','.%s_%s'%(syst,Q.lower()))
             print _treevar
         elif mjj == True:
             if syst == 'JER' or syst == 'JES':
@@ -639,7 +653,7 @@ if not ignore_stats:
                     if Q == 'Up':
                         final_histos['%s_bin%s_%s'%(systematicsnaming['stats'],bin,Q)][job].SetBinContent(bin,max(0,hist.GetBinContent(bin)+hist.GetBinError(bin)))
                     if Q == 'Down':
-                        final_histos['%s_bin%s_%s'%(systematicsnaming['stats'],bin,Q)][job].SetBinContent(bin,max(0,hist.GetBinContent(bin)-hist.GetBinError(bin)))
+                        final_histos['%s_bin%s_%s'%(systematicsnaming['stats'],bin,Q)][job].SetBinContent(bin,max(1.E-6,hist.GetBinContent(bin)-hist.GetBinError(bin)))
 
 
 #print "binsBelowThreshold:",binsBelowThreshold

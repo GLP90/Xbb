@@ -141,8 +141,9 @@ def drawFromDC():
         elif dataname == 'Wmn' or dataname == 'Wen': var = 'BDT_Wln' 
         elif dataname == 'Znn': 
             if 'HighPt' in opts.bin: var = 'BDT_ZnnHighPt'
-            if 'LowPt' in opts.bin: var = 'BDT_ZnnLowPt'
-            if 'LowCSV' in opts.bin: var = 'BDT_ZnnLowCSV'
+            elif 'LowPt' in opts.bin: var = 'BDT_ZnnLowPt'
+            elif 'LowCSV' in opts.bin: var = 'BDT_ZnnLowCSV'
+            else: var = 'BDT_Znn'
         if dataname == '' or var == 'BDT': raise RuntimeError, "Did not recognise mode or var from %s" % opts.bin
     else:
         var = opts.var
@@ -160,6 +161,8 @@ def drawFromDC():
         Stack.addFlag2 = 'Intermediate p_{T}(V)'
     elif 'HighPt' in opts.bin or 'ch1_Wenu3' == opts.bin or 'ch2_Wmunu3' == opts.bin:
         Stack.addFlag2 = 'High p_{T}(V)'
+    else:
+        Stack.addFlag2 = ''
 
     preFit = False
     addName = 'PostFit_%s' %(opts.fit)

@@ -773,7 +773,6 @@ double ptWeightQCD(int nGenVbosons, double lheHT, int GenVbosons_pdgId){
   return SF>0?SF:0;
 }
 
-
 // weights correction for EWK NLO correction (for ZllHbb only !!!)
 double ptWeightEWK_Zll(int nGenVbosons,double GenVbosons_pt,int VtypeSim,int GenVbosons_pdgId, int nGenTop, int nGenHiggsBoson){
     double SF = 1.;

@@ -100,6 +100,8 @@ class StackMaker:
             self.options['weight'] = config.get('Weights','weightF')
         else:
             self.options['weight'] = None
+
+        print "Using weightF:",self.options['weight']
         self.plotDir = config.get('Directories','plotpath')
         #self.maxRatioUncert = 1000.5
         self.maxRatioUncert = 0.5

@@ -40,8 +40,8 @@ def getRatio(hist,reference,min,max,yTitle="",maxUncertainty = 1000.000,restrict
 #        theRatio.SetMaximum(1.)
 #        theRatio.SetMinimum(0.01)
 #        theRatio.SetMaximum(2.49)
-        theRatio.SetMinimum(0.35)
-        theRatio.SetMaximum(1.8)
+        theRatio.SetMinimum(0.5)
+        theRatio.SetMaximum(1.75)
     else:
         theRatio.SetMinimum(int(theRatio.GetMinimum()))
         theRatio.SetMaximum(int(theRatio.GetMaximum()*1.5))

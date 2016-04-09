@@ -1,0 +1,5 @@
+/store/user/arizzi/VHBBHeppyV21/MuonEG/VHBB_HEPPY_V21_MuonEG__Run2015C_25ns-16Dec2015-v1/160318_133310/0000/tree_1.root
+/store/user/arizzi/VHBBHeppyV21/MuonEG/VHBB_HEPPY_V21_MuonEG__Run2015C_25ns-16Dec2015-v1/160318_133310/0000/tree_2.root
+/store/user/arizzi/VHBBHeppyV21/MuonEG/VHBB_HEPPY_V21_MuonEG__Run2015C_25ns-16Dec2015-v1/160318_133310/0000/tree_3.root
+/store/user/arizzi/VHBBHeppyV21/MuonEG/VHBB_HEPPY_V21_MuonEG__Run2015C_25ns-16Dec2015-v1/160318_133310/0000/tree_4.root
+/store/user/arizzi/VHBBHeppyV21/MuonEG/VHBB_HEPPY_V21_MuonEG__Run2015C_25ns-16Dec2015-v1/160318_133310/0000/tree_5.root

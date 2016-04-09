@@ -46,7 +46,8 @@ for file_ in files_:
     inputs.append((dirpath_+'/'+ file_,outName+'/'+file_))
 
 function = None
+expoRatio=None
 for (inpt,outpt) in inputs:
-    function = doFile(inpt,outpt,function)
+    function,expoRatio = doFile(inpt,outpt,function,expoRatio)
 #    print inpt,outpt
 
