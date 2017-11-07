@@ -45,12 +45,6 @@ class NewHistoMaker:
             else:
                 weightF = "({weight})".format(weight=self.histogramOptions['weight'] if ('weight' in self.histogramOptions and self.histogramOptions['weight']) else '1') 
 
-            # per sample special weight 
-            if self.config.has_option('Weights', 'useSpecialWeight') and eval(self.config.get('Weights', 'useSpecialWeight')):
-                specialweight = self.sample.specialweight 
-                weightF = "(({weight})*({specialweight}))".format(weight=weightF, specialweight=specialweight)
-                print ("INFO: use specialweight: {specialweight}".format(specialweight=specialweight))
-
             # add tree cut 
             # TODO: add sample cut again, which should not matter but to be safe
             selection = "({weight})*({cut})".format(weight=weightF, cut=cut) 

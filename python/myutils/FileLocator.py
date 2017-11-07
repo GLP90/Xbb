@@ -1,5 +1,4 @@
 from __future__ import print_function
-import os
 
 class FileLocator(object):
 
@@ -31,34 +30,6 @@ class FileLocator(object):
     # check if a path is a PNFS directory (with or without redirector)
     def isPnfs(self, path):
         return self.pnfsPrefix in path
-
-    def getDeletionCommand(self, fileName):
-        localName = self.getLocalFileName(fileName)
-        if ('/' + localName.strip().strip('/')).startswith(self.pnfsPrefix):
-            if self.xrootdRedirectors and len(self.xrootdRedirectors) > 0:
-                serverName = self.xrootdRedirectors[0].split('root://')[1].split(':')[0]
-                return "xrdfs {server} rm {file}".format(server=serverName, file=localName)
-            else:
-                raise Exception("NoRedirectorSpecified")
-        else:
-            return "rm {file}".format(file=localName)
-    
-    def getMakedirCommand(self, fileName):
-        localName = self.getLocalFileName(fileName)
-        if ('/' + localName.strip().strip('/')).startswith(self.pnfsPrefix):
-            if self.xrootdRedirectors and len(self.xrootdRedirectors) > 0:
-                serverName = self.xrootdRedirectors[0].split('root://')[1].split(':')[0]
-                return "xrdfs {server} mkdir {file}".format(server=serverName, file=localName)
-            else:
-                raise Exception("NoRedirectorSpecified")
-        else:
-            return "mkdir {file}".format(file=localName)
-
-    def fileExists(self, fileName):
-        return os.path.isfile(self.getLocalFileName(fileName))
-
-    def directoryExists(self, fileName):
-        return os.path.isdir(self.getLocalFileName(fileName))
 
     # ------------------------------------------------------------------------------
     # get file name WITH redirector

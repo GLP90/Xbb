@@ -1,14 +1,8 @@
 ------------------------------------------------------------------------------
-run full test suite
-------------------------------------------------------------------------------
-./run_all.py            runs everything
-
-
-------------------------------------------------------------------------------
 prepare unit tests
 ------------------------------------------------------------------------------
 
-./init.py               create some fake tree data with 10 files and many
+./test_init.py          create some fake tree data with 10 files and many
                         useless branches which will be stripped
 
 
@@ -20,13 +14,10 @@ run unit tests
 ./test_TreeCache.py     test sample cache class
 ./test_FileList.py      compression/decompression check of FileList
 ./test_BranchList.py    test class to get list of branches from cut string
-./test_SampleTree_AddBranches.py    test the functionality to add new branches
-                        to the output tree, filled by a TTreeFormula or a
-                        (lambda) function.
 
 ------------------------------------------------------------------------------
 clean up
 ------------------------------------------------------------------------------
 
-./clean.py              clean up all the files which have been created,
+./test_clean.py         clean up all the files which have been created,
                         including test trees made by test_init.py

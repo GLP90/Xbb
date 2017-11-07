@@ -130,6 +130,7 @@ config.read(configs)
 
 # RETRIEVE RELEVANT VARIABLES FROM CONFIG FILES AND FROM COMMAND LINE OPTIONS
 logPath = config.get("Directories","logpath")
+logo = open('%s/data/submit.txt' %config.get('Directories','vhbbpath')).readlines()
 counter = 0
 samplesinfo = config.get("Directories","samplesinfo")
 whereToLaunch = config.get('Configuration','whereToLaunch')
@@ -292,9 +293,12 @@ list_submitted_singlejobs = {}
 def submit(job,repDict,redirect_to_null=False):
     global counter
     repDict['job'] = job
-    nJob = counter 
+    nJob = counter % len(logo)
     counter += 1
-    repDict['name'] = '%(job)s_%(en)s%(task)s' %repDict
+    if opts.philipp_love_progress_bars:
+        repDict['name'] = '"%s"' %logo[nJob].strip()
+    else:
+        repDict['name'] = '%(job)s_%(en)s%(task)s' %repDict
 
     # run script
     runScript = 'runAll.sh %(job)s %(en)s '%(repDict)
@@ -346,7 +350,7 @@ def submit(job,repDict,redirect_to_null=False):
 # SINGLE (i.e. FILE BY FILE) AND SPLITTED FILE WORKFLOW SUBMISSION FUNCTION
 def checksinglestep(repDict,run_locally,counter_local,Plot,file="none",sample="nosample"):
     global counter
-    nJob = counter
+    nJob = counter % len(logo)
     counter += 1
     task = opts.task
     if file != "none":
@@ -361,10 +365,13 @@ def submitsinglefile(job,repDict,file,run_locally,counter_local,Plot,resubmit=Fa
     global counter
     repDict['job'] = job
     repDict['joblogname'] = job.replace(',','_')
-    nJob = counter 
+    nJob = counter % len(logo)
     counter += 1
-    repDict['name'] = '%(job)s_%(en)s%(task)s' %repDict
-    repDict['name'] = repDict['name'].replace(',','_')+'_'+str(counter_local)
+    if opts.philipp_love_progress_bars:
+        repDict['name'] = '"%s"' %logo[nJob].strip()
+    else:
+        repDict['name'] = '%(job)s_%(en)s%(task)s' %repDict
+        repDict['name'] = repDict['name'].replace(',','_')+'_'+str(counter_local)
     repDict['logname'] =  ('%(task)s_%(timestamp)s_%(job)s_%(en)s_%(additional)s.out' %(repDict)).replace(',','_')
     if run_locally == 'True':
         command = 'sh runAll.sh %(job)s %(en)s ' %(repDict) + opts.task + ' ' + repDict['nprocesses']+ ' ' + repDict['job_id'] + ' ' + ('0' if not repDict['additional'] else repDict['additional'])
@@ -393,9 +400,12 @@ def submitsinglefile(job,repDict,file,run_locally,counter_local,Plot,resubmit=Fa
 def mergesubmitsinglefile(job,repDict,run_locally,Plot):
     global counter
     repDict['job'] = job
-    nJob = counter 
+    nJob = counter % len(logo)
     counter += 1
-    repDict['name'] = ('%(job)s_%(en)s%(task)s' %repDict).replace(',','_')
+    if opts.philipp_love_progress_bars:
+        repDict['name'] = '"%s"' %logo[nJob].strip()
+    else:
+        repDict['name'] = ('%(job)s_%(en)s%(task)s' %repDict).replace(',','_')
     repDict['logname'] =  ('%(task)s_%(timestamp)s_%(job)s_%(en)s_%(additional)s.out' %(repDict)).replace(',','_')
     if run_locally == 'True':
         command = 'sh runAll.sh %(job)s %(en)s ' %(repDict) + opts.task + ' ' + repDict['nprocesses']+ ' ' + repDict['job_id'] + ' ' + ('0' if not repDict['additional'] else repDict['additional'])
@@ -923,7 +933,7 @@ if opts.task.startswith('cachedc'):
 
         # number of files to process per job 
         splitFilesChunkSize = min([sample.mergeCachingSize for sample in samples if sample.identifier == sampleIdentifier])
-        splitFilesChunks = SampleTree({'name': sampleIdentifier, 'folder': sampleFolder}, countOnly=True, splitFilesChunkSize=splitFilesChunkSize, config=config).getSampleFileNameChunks()
+        splitFilesChunks = SampleTree({'name': sampleIdentifier, 'folder': sampleFolder}, countOnly=True, splitFilesChunkSize=splitFilesChunkSize).getSampleFileNameChunks()
         print "DEBUG: split after ", splitFilesChunkSize, " files => number of parts = ", len(splitFilesChunks)
         
         # submit all the single parts

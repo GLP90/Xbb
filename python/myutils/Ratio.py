@@ -27,16 +27,13 @@ def renewHist(hist,reference,min,max):
 def getRatio(hist,reference,min,max,yTitle="",maxUncertainty = 1000.000,restrict=True):
     from ROOT import gROOT,gSystem
     theHist, theReference = renewHist(hist,reference,min,max)
-    try:
-        from ROOT import coolRatio
-    except ImportError:
-        gROOT.ProcessLine('.L $CMSSW_BASE/src/Xbb/python/myutils/Ratio.C')
-        from ROOT import coolRatio
-    #gROOT.ProcessLine('.L /mnt/t3nfs01/data01/shome/gaperrin/VHbb/CMSSW_7_4_3/src/Xbb/python/myutils/Ratio.C+') # To make plots
+    #gROOT.ProcessLine('.L $CMSSW_BASE/src/Xbb/python/myutils/Ratio.C')
+    gROOT.ProcessLine('.L /mnt/t3nfs01/data01/shome/gaperrin/VHbb/CMSSW_7_4_3/src/Xbb/python/myutils/Ratio.C+') # To make plots
     #gROOT.ProcessLine('.L /mnt/t3nfs01/data01/shome/gaperrin/VHbb/CMSSW_7_4_3/src/Xbb/python/myutils/Ratio.C') # To make postfit plots
     print "AAAAa"
 #    gROOT.Load('$CMSSW_BASE/src/Xbb/python/myutils/Ratio_C.so')
     print "AAAA"
+    from ROOT import coolRatio
     print "BBB"
     thePlotter = coolRatio()
     theRatio = thePlotter.make_rebinned_ratios(theHist,theReference,maxUncertainty,False,0)
