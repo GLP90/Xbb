@@ -880,8 +880,8 @@ class HistoMaker:
             #        custom_rebin.append(b)
             #    self.mybinning = Rebinner(len(custom_rebin) -1 ,custom_rebin),True,self.BDTmin)
         else:
-            self.mybinning = Rebinner(int(self.norebin_nBins),array('d',[-1.0]+[totalBG.GetBinLowEdge(i) for i in binlist]),True)
-            #self.mybinning = Rebinner(int(self.norebin_nBins),array('d',[-0.8]+[totalBG.GetBinLowEdge(i) for i in binlist]),True)
+            #self.mybinning = Rebinner(int(self.norebin_nBins),array('d',[-1.0]+[totalBG.GetBinLowEdge(i) for i in binlist]),True)
+            self.mybinning = Rebinner(int(self.norebin_nBins),array('d',[-0.8]+[totalBG.GetBinLowEdge(i) for i in binlist]),True)
         #self.mybinning = Rebinner(int(self.norebin_nBins),array('d',[0.]+[totalBG.GetBinLowEdge(i) for i in binlist]),True)
         self._rebin = True
         print '\t > rebinning is set <\n'
@@ -930,7 +930,8 @@ class Rebinner:
         self.lowedgearray=lowedgearray
         self.nBins=nBins
         self.active=active
-        self.custom_rebin = True
+        #self.custom_rebin = True
+        self.custom_rebin = False
     def rebin(self, histo):
         if not self.active: return histo
         #print histo.Integral()
