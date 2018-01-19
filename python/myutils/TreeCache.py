@@ -175,7 +175,9 @@ class TreeCache:
             source = '%s/%s' %(self.path,sample.get_path)
             inputfiles.append(source)
             checksum = self.get_checksum(source)
-            theHash = hashlib.sha224('%s_s%s_%s' %(sample,checksum,self.minCut)).hexdigest()
+            #Important: new theHash only to reproduce 2016 dc.
+            #theHash = hashlib.sha224('%s_s%s_%s' %(sample,checksum,self.minCut)).hexdigest()
+            theHash = hashlib.sha224('%s_%s_split%d' %(sample,self.minCut,sample.mergeCachingSize)).hexdigest()
             self.__hashDict[theName] = theHash
             tmpSource = '%s/tmp_%s.root'%(self.__tmpPath,theHash)
             print('opening '+source)

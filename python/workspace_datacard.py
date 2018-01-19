@@ -1108,6 +1108,10 @@ if merge:
     #    data_histos[job.name] = AllHisoDic['data_obs']
 
 else:
+    print '================'
+    print'mergeCachingPart is, ', mergeCachingPart
+    print '================'
+
     mc_hMaker   = HistoMaker(samples=all_samples_HM,  path=path, config=config, optionsList=optionsList     , GroupDict=GroupDict, filelist=filelist, mergeplot=opts.mergeplot, sample_to_merge=sample_to_merge_, mergeCachingPart=mergeCachingPart, plotMergeCached = opts.mergecachingplot, branch_to_keep=all_keep_list, dccut = dccut)#sys should never be removed in dc
     data_hMaker = HistoMaker(samples=data_samples, path=path, config=config, optionsList=[optionsList[0]], GroupDict=None     , filelist=filelist, mergeplot=opts.mergeplot, sample_to_merge=sample_to_merge_, mergeCachingPart=mergeCachingPart, plotMergeCached = opts.mergecachingplot, branch_to_keep=all_keep_list, dccut = dccutdata)
     #
