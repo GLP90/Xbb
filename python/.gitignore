@@ -7,6 +7,9 @@ luca
 !json
 !*config/*
 */*.swo
+*.log
+*/*.log
+*/*.swp
 !myutils/
 !csv/*
 csv/*.d

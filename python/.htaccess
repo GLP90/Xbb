@@ -1,0 +1,29 @@
+# ShibRequireAll On
+# ShibRequireSession On
+# ShibExportAssertion On
+# SSLRequireSSL   # The modules only work using HTTPS
+# AuthType Shibboleth
+
+# Require adfs-group "All CMS users" "zh"
+
+
+
+# PerlAuthenHandler NICEAuthentication
+# PerlAuthzHandler NICEAuthorization
+# SSLRequireSSL   # The modules only work using HTTPS
+# AuthName "CERN Authentication required"
+# AuthType Basic
+# Options +Indexes
+
+
+# Require group "All CMS users" "cms-members"
+
+
+SSLRequireSSL # The modules only work using HTTPS
+AuthType shibboleth
+ShibRequireSession On
+ShibRequireAll On
+ShibExportAssertion Off
+
+Require valid-user
+Require ADFS_GROUP "All CMS users" "cms-members"
