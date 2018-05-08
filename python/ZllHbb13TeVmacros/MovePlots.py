@@ -9,23 +9,22 @@ import argparse
 
 
 parser = argparse.ArgumentParser(description='Move plots to public webpage')
-parser.add_argument('_input', metavar='I', help='input folder')
-parser.add_argument('_output', default = '/', metavar='T', help='target')
-
-parser.add_argument('-no', dest='do_outp', action='store_const',
-                   const=False, default=True,  help='no copying')
-parser.add_argument('-ni', dest='do_inp', action='store_const',
-                   const=False, default=True,  help='no preparation of folders for each Region')
+parser.add_argument('_input', nargs='*', metavar='I', help='first argument: input folder, second argument (optional) output folder. You can use --eos or --afs option to use the default path as output folder. If output folder and --eos or --afs option is set, the output folder will be appended to the default path.')
 #parser.add_argument('-r', dest='region', action='store_const',
 #                   const=False, default=True,  help='use automatic region list insead of default')
 parser.add_argument('--server', default = None, help='other server than lxplus')
-parser.add_argument('-eos', dest='webservice', action='store_const', default = False, const='eos', help='use default path with eos webserver')
-parser.add_argument('-afs', dest='webservice', action='store_const', default = False, const='afs', help='use default path with afs webserver')
-parser.add_argument('-nh', dest='ht', action='store_const',
-                   const=False, default=True,  help='no htaccess file is created')
+parser.add_argument('--eos', dest='webservice', action='store_const', default = False, const='eos', help='use default path with eos webserver')
+parser.add_argument('--afs', dest='webservice', action='store_const', default = False, const='afs/cern.ch', help='use default path with afs webserver')
 parser.add_argument('--name', default = None, help='Give a name to the new dir')
 
 parser.add_argument('--folders', default = "region", help='how to make subfolders: <none>, <region> (default), <variable>')
+parser.add_argument('--no', dest='do_outp', action='store_const',
+                   const=False, default=True,  help='no copying')
+parser.add_argument('--ni', dest='do_inp', action='store_const',
+                   const=False, default=True,  help='no preparation of folders for each Region')
+parser.add_argument('--nh', dest='ht', action='store_const',
+                   const=False, default=True,  help='no htaccess file is created')
+
 args = parser.parse_args()
 #args = sys.argv[1:]
 #if len(args) == 2:
@@ -34,8 +33,14 @@ args = parser.parse_args()
 #else:
 #    print 'Error, need two agruments. You have provided', len(args)
 #    sys.exit(1)
-_input = args._input
-_output = args._output
+
+
+_input = args._input[0]
+if len(args._input) > 1:
+    _output = args._input[1]
+
+else:
+    _output = "/"
 
 args.region = False
 print 'Input folder is', _input
@@ -55,12 +60,15 @@ def MakeSubFolders(_input, RegionList=None):
     if not os.path.isdir(_plotfolder):
         os.mkdir(_plotfolder)
 
-    print 'command is','cp -r '+current_+'/.htaccess ' + _plotfolder + '/'
+    print 'command is','cp -r ../config ' + _plotfolder + '/'
     subprocess.call('cp -r ../config ' + _plotfolder + '/', shell = True)
+    
     if args.ht:
+        print 'command is','cp -r '+current_+'/.htaccess ' + _plotfolder + '/'
         subprocess.call('cp -r '+current_+'/.htaccess ' + _plotfolder + '/', shell = True)
+        subprocess.call('cp -r ' + current_ + '/.htaccess ' + _plotfolder + '/config/', shell = True)
     subprocess.call('cp -r '+current_+'/index.php ' + _plotfolder + '/', shell = True)
-
+    subprocess.call('cp -r ' + current_ + '/index.php ' + _plotfolder + '/config/', shell = True)
     FILE = os.listdir('.')
 
     #subprocess.call('cp -r ../config .', shell = True)
