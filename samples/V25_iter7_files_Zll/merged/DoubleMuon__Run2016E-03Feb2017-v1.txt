@@ -1,2 +1,0 @@
-/store/user/arizzi/VHBBHeppyV25b/DoubleMuon/87f427a659797c8ebeac43876ef4fd8a3fc043ba03d4357954f4e992/000000_000000/0000/tree_0.root
-/store/user/arizzi/VHBBHeppyV25b/DoubleMuon/60d5858eeb53602042bcaae26132d9dab7cfe993c9aa12f486b3a37f/000000_000000/0000/tree_1.root

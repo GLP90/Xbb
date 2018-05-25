@@ -1,2 +1,0 @@
-/store/user/tboccali/Ntuples_v25/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/003b124a32090f01989b676387cb871ebe33aaf7184e6994678c3a72/000000_000000/0000/tree_0.root
-/store/user/tboccali/Ntuples_v25/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/86230dcd706c45410f41e148c8c411b607e241c24e05e3066b5c7549/000000_000000/0000/tree_1.root

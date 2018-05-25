@@ -1,4 +1,0 @@
-/store/user/arizzi/VHBBHeppyV25b/DoubleEG/6920aec819a216344bd5bcd215fe37b76d61039af351357f483c3761/000000_000000/0000/tree_0.root
-/store/user/arizzi/VHBBHeppyV25b/DoubleEG/724078f6d37bb230463811be4997eea647d7a2acc2eba1caba0977ae/000000_000000/0000/tree_1.root
-/store/user/arizzi/VHBBHeppyV25b/DoubleEG/6fda7bebc694f8d610ebbf2c350b145901f4cb83d7609bcf6eae69e9/000000_000000/0000/tree_2.root
-/store/user/arizzi/VHBBHeppyV25b/DoubleEG/229c7e510dfd795845741c1fc082d6332c737d5946591aac8f67c488/000000_000000/0000/tree_3.root

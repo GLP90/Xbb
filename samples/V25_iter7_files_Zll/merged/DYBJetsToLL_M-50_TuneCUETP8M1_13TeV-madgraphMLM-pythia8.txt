@@ -1,2 +1,0 @@
-/store/group/phys_higgs/hbb/ntuples/V25/DYBJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/3fa15bdaef84ab2d8bed75814db597680c73bb7dfa26c283a4f4b59d/000000_000000/0000/tree_0.root
-/store/group/phys_higgs/hbb/ntuples/V25/DYBJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/d8809f730044dd1f1b08299e4a969864fff41191f0e724c6feb704a7/000000_000000/0000/tree_1.root

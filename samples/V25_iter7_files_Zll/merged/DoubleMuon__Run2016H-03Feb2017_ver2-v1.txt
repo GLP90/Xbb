@@ -1,4 +1,0 @@
-/store/user/arizzi/VHBBHeppyV25b/DoubleMuon/d85f76324fca401ca712288e85441a2bb589ab9453246c79ec7779f2/000000_000000/0000/tree_0.root
-/store/user/arizzi/VHBBHeppyV25b/DoubleMuon/66d6021c68e45a2b1052ad0e6164549e55f2b98cfb227f48652408fe/000000_000000/0000/tree_1.root
-/store/user/arizzi/VHBBHeppyV25b/DoubleMuon/0d6975add9f3705b72ba4ab8f3f9dbae9010dbee265a048444663892/000000_000000/0000/tree_2.root
-/store/user/arizzi/VHBBHeppyV25b/DoubleMuon/5ce6292ccff4ff0bfd9e5205d2c5e0f5554d0a8b64fd4a3ba1807200/000000_000000/0000/tree_3.root

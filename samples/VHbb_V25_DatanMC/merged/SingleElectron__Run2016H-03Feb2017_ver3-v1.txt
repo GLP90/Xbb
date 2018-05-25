@@ -1,2 +1,0 @@
-/store/user/arizzi/VHBBHeppyV25b/SingleElectron/5d188fa85b1a14a64b84a24c8d9debfb4e17afa43f22ca5a55501a26/000000_000000/0000/tree_0.root
-/store/user/arizzi/VHBBHeppyV25b/SingleElectron/b01afd6b3ca10f1938f0d8b7ea421da1e4116b9bca0723e76b53cc3f/000000_000000/0000/tree_1.root

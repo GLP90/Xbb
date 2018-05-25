@@ -1,1 +1,0 @@
-/store/user/tboccali/Ntuples_v25/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/fb0a1784a7bb7c1c330f901fd6941a0b75b25cfe1dbb20576d5d150a/000000_000000/0000/tree_0.root

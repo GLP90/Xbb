@@ -1,1 +1,0 @@
-/store/user/tboccali/Ntuples_v25/WW_TuneCUETP8M1_13TeV-pythia8/96f78bf0e0571bece03f697c811a5c3fe97e953096f53a7e0f467302/000000_000000/0000/tree_0.root

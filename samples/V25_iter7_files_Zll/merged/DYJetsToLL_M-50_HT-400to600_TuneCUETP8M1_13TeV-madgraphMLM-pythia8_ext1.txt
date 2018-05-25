@@ -1,1 +1,0 @@
-/store/group/phys_higgs/hbb/ntuples/V25/DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/8a791a61f3f49b23d869d44099aeee517aa0674490a334b3bea00529/000000_000000/0000/tree_0.root

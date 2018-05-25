@@ -213,11 +213,8 @@ class BTagWeights(object):
 
             if self.nano:
                 for i in range(tree.nJet):
-                   # if (tree.Jet_bReg[i]*tree.Jet_Pt[i]/tree.Jet_pt[i] > 20 and abs(tree.Jet_eta[i]) < 2.4):
-                    #    jet_cmva = Jet(tree.Jet_bReg[i]*tree.Jet_Pt[i]/tree.Jet_pt[i], tree.Jet_eta[i], tree.Jet_hadronFlavour[i], tree.Jet_btagCMVA[i])
-		#Modifed for 2016 Nano v4
-		     if (tree.Jet_PtReg[i] > 20 and abs(tree.Jet_eta[i]) < 2.4):
-                        jet_cmva = Jet(tree.Jet_PtReg[i], tree.Jet_eta[i], tree.Jet_hadronFlavour[i], tree.Jet_btagCMVA[i])
+                    if (tree.Jet_bReg[i]*tree.Jet_Pt[i]/tree.Jet_pt[i] > 20 and abs(tree.Jet_eta[i]) < 2.4):
+                        jet_cmva = Jet(tree.Jet_bReg[i]*tree.Jet_Pt[i]/tree.Jet_pt[i], tree.Jet_eta[i], tree.Jet_hadronFlavour[i], tree.Jet_btagCMVA[i])
                         jets_cmva.append(jet_cmva)
             else:
                 for i in range(tree.nJet):

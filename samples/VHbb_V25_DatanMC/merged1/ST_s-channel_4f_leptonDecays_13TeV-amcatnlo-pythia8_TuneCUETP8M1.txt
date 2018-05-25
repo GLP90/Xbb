@@ -1,1 +1,0 @@
-/store/user/tboccali/Ntuples_v25/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/ab228763573d77cee2203610a4916764baf7dbe24ae9dfe86c30041b/000000_000000/0000/tree_0.root
