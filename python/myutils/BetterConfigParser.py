@@ -14,7 +14,8 @@ class BetterConfigParser(ConfigParser.SafeConfigParser):
       os.environ['TERM'] = 'dumb'
 
     # allow string interpolation with environment variables
-    def __init__(self):
+    def __init__(self, recursiveReplace=False):
+        self.recursiveReplace = recursiveReplace
         ConfigParser.SafeConfigParser.__init__(self, os.environ)
 
     def get(self, section, option):
@@ -32,13 +33,26 @@ class BetterConfigParser(ConfigParser.SafeConfigParser):
         '''
         replace <section|option> with get(section,option) recursivly
         '''
-        result = data
-        findExpression = re.compile("((.*)\<!(.*)\|(.*)\!>(.*))*")
-        groups = findExpression.search(data).groups()
-        if not groups == (None, None, None, None, None): # expression not matched
-            result = self.__replaceSectionwideTemplates(groups[1])
-            result += self.get(groups[2], groups[3])
-            result += self.__replaceSectionwideTemplates(groups[4])
+        # allow recursive replacement in the expression itself, e.g. settings = <!Test|settings_<!Test|method!>!>
+        if self.recursiveReplace:
+            result = None
+            findExpression = re.compile("((.*)\<!(.*)\|(.*?)\!>(.*))*")
+            while result != data:
+                groups = findExpression.search(data).groups()
+                if not groups == (None, None, None, None, None): # expression not matched
+                    data = self.__replaceSectionwideTemplates(groups[1]) + self.get(groups[2], groups[3]) + self.__replaceSectionwideTemplates(groups[4])
+                else:
+                    result = data
+        # old behavior
+        else:
+            result = data
+            findExpression = re.compile("((.*)\<!(.*)\|(.*)\!>(.*))*")
+            groups = findExpression.search(data).groups()
+            if not groups == (None, None, None, None, None): # expression not matched
+                result = self.__replaceSectionwideTemplates(groups[1])
+                result += self.get(groups[2], groups[3])
+                result += self.__replaceSectionwideTemplates(groups[4])
+
         return result
 
 #    def read(self, optionstr):
