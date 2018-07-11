@@ -12,6 +12,8 @@ from NewStackMaker import NewStackMaker as StackMaker
 from NewHistoMaker import NewHistoMaker as HistoMaker
 from BranchList import BranchList
 import array
+import re
+import itertools
 
 class Datacard(object):
     def __init__(self, config, region, verbose=True):
@@ -43,7 +45,10 @@ class Datacard(object):
         self.outpath = config.get('Directories', 'limits')
         self.optimisation = "" #TODO: opts.optimisation
         self.optimisation_training = False
-        self.UseTrainSample = eval(config.get('Analysis', 'UseTrainSample'))
+        try:
+            self.UseTrainSample = eval(config.get('Analysis', 'UseTrainSample'))
+        except:
+            self.UseTrainSample = False
         if self.UseTrainSample:
             print ('Training events will be used')
         if not self.optimisation == '':
@@ -301,14 +306,33 @@ class Datacard(object):
                 # to keep compatiblity with legacy analysis where naming was uppercase for weight systematics
                 # look for *_Up first and then for *_UP if it does not exist
                 weightNames = ['%s_%s'%(weightF_sys, x) for x in [Q, Q.upper()]]
-                weight = next(iter([self.config.get('Weights', x) for x in weightNames if self.config.has_option('Weights', x)]))
+                try:
+                    weight = next(iter([self.config.get('Weights', x) for x in weightNames if self.config.has_option('Weights', x)]))
+                except Exception as e:
+
+                    match = False
+                    if self.config.has_option('Weights', 'regex'):
+                        regex = eval(self.config.get('Weights', 'regex'))
+                        for findString,replaceString in regex:
+                            for x in weightNames:
+                                if re.match(findString, x):
+                                    weight = re.sub(findString, replaceString, x)
+                                    match = True
+                    if match:
+                        if self.debug:
+                            print('DEBUG: matched ', weightF_sys, ' ---> ', weight)
+
+                    else:
+                        print('\x1b[31mERROR: could not find weight fot weight_sys:', weightF_sys, x, " check general.ini!\x1b[0m")
+                        print('DEBUG: general.ini > [Weights] > (one of) ', weightNames)
+                        raise e
 
                 systematicsDictionary = deepcopy(self.systematicsDictionaryNominal)
                 systematicsDictionary.update({
                         'sysType': 'weight',
                         'weight': weight if self.SBweight == None else '('+weight+')*('+self.SBweight+')', 
                         'name': weightF_sys,
-                        'systematicsName': '{sysName}_{Q}'.format(sysName=self.sysOptions['systematicsnaming'][weightF_sys], Q=Q) 
+                        'systematicsName': '{sysName}_{Q}'.format(sysName=self.sysOptions['systematicsnaming'][weightF_sys] if weightF_sys in self.sysOptions['systematicsnaming'] else weightF_sys, Q=Q) 
                     })
                 self.systematicsList.append(systematicsDictionary)
 
@@ -391,9 +415,7 @@ class Datacard(object):
                     totalBG = histoMaker.getHistogram(systematics['cut']).Clone()
                 else:
                     totalBG.Add(histoMaker.getHistogram(systematics['cut']))
-            # TODO!
-            # here comes
-            # MOMS SPAGHETTI
+            # OLD REBINNER
             ErrorR=0
             ErrorL=0
             TotR=0
@@ -530,9 +552,11 @@ class Datacard(object):
                         tempReplacements[tempName] = v.format(syst=syst, Up=Q, Down=Q)
                         cut = cut.replace(k, '{%s}'%tempName)
         # now do normal replacements
-        if syst != 'minmax':
+        if syst != 'minmax' or not self.sysOptions['sys_cut_dict']:
             new_cut_list = self.sysOptions['sys_cut_suffix'][syst] if isinstance(self.sysOptions['sys_cut_suffix'][syst], list) else [self.sysOptions['sys_cut_suffix'][syst]] 
             for new_cut in new_cut_list:
+                if self.debug:
+                    print('DEBUG: replacement rule:', new_cut)
                 if not new_cut == 'nominal':
                     old_str, new_str = new_cut.split('>')
                     new_str = new_str.format(syst=syst, UD=Q).replace('SYS', syst).replace('UD', Q).replace('?', Q)
@@ -806,6 +830,8 @@ class Datacard(object):
                 filesExist = False
                 break
             rootFile.Close()
+            txtFileName = self.getDatacardBaseName(subPartName=sampleIdentifier) + '.txt'
+            filesExist = filesExist and os.path.isfile(txtFileName)
         return filesExist
 
     def getHistogramName(self, process, systematics):

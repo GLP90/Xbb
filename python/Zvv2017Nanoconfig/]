@@ -1,0 +1,105 @@
+[Cuts]
+
+Hbtag = H
+
+# MVA training 
+# --------------------------------------------------------------------------------------------------
+TrainCut = !((event%%2)==0||isData)
+EvalCut = ((event%%2)==0||isData)
+
+# --------------------------------------------------------------------------------------------------
+# jet & dijet
+# --------------------------------------------------------------------------------------------------
+jet_pt      = Jet_PtReg
+jet_pt0     = Jet_PtReg[<!General|btagidx0!>]
+jet_pt1     = Jet_PtReg[<!General|btagidx1!>]
+
+dijet_pt    = H_pt
+dijet_phi   = H_phi
+dijet_mass  = H_mass
+
+# --------------------------------------------------------------------------------------------------
+# V boson
+# --------------------------------------------------------------------------------------------------
+Vpt         = V_pt
+Vphi        = V_phi
+Vtype       = Vtype
+
+# --------------------------------------------------------------------------------------------------
+# Lepton
+# --------------------------------------------------------------------------------------------------
+#Ele_iso     = (Sum$(Electron_pt>20&&Electron_mvaSpring16GP_WP90&&(abs(Electron_eta)>=1.57||abs(Electron_eta)<=1.44)&&Electron_pfRelIso03_all<0.06)>=1) 
+#Muon_iso    = (Sum$(Muon_pfRelIso04_all<0.06)>=1) 
+Ele_iso     = 1 
+Muon_iso    = 1 
+NaddLep     = (nElectron+nMuon)
+Muon        = (<!Cuts|Vtype!> == 2 && <!Cuts|Muon_iso!>)
+Electron    = (<!Cuts|Vtype!> == 3 && <!Cuts|Ele_iso!>)
+E_OR_dMu    = (<!Cuts|Muon!>||<!Cuts|Electron!>)
+
+# --------------------------------------------------------------------------------------------------
+# MET
+# --------------------------------------------------------------------------------------------------
+METphi      = MET_phi
+METpt       = MET_Pt
+tkMETphi    = TkMET_phi
+
+# --------------------------------------------------------------------------------------------------
+# Additional jets
+# --------------------------------------------------------------------------------------------------
+;Definiton not fully correct, some Higgs jets may have pt < 30
+noAdditionalJets = (Sum$(Jet_PtReg>30&&abs(Jet_eta)<2.4&&Jet_puId>=4&&Jet_lepFilter)<3)
+NaddJets    =  (Sum$(Jet_PtReg>30&&abs(Jet_eta)<2.4&&Jet_puId>=4&&Jet_lepFilter)-2)
+NotFourJets = (Sum$(Jet_PtReg>30&&abs(Jet_eta)<2.4&&Jet_puId>=4&&Jet_lepFilter)<4)
+FourJets    = (Sum$(Jet_PtReg>30&&abs(Jet_eta)<2.4&&Jet_puId>=4&&Jet_lepFilter)>=4)
+
+;Other var
+NoPU            = Jet_puId[hJidxCMVA[0]] >= 4 & Jet_puId[hJidxCMVA[1]] >= 4
+DphiV_H         = abs(TVector2::Phi_mpi_pi(<!Cuts|dijet_phi!>-<!Cuts|METphi!>))
+DphiMET_tkMET   = abs(TVector2::Phi_mpi_pi(<!Cuts|METphi!>-<!Cuts|tkMETphi!>))
+MinDphiMET_Jet  = Min$(abs(TVector2::Phi_mpi_pi(Jet_phi[hJidxCMVA]-V_phi)))
+QCD             = Sum$(abs(VHbb::deltaPhi(Jet_phi,<!Cuts|Vphi!>))<0.4&&<!Cuts|jet_pt!>>30&&Jet_puId>=4&&Jet_lepFilter)>0
+AntiQCD         = Sum$(abs(VHbb::deltaPhi(Jet_phi,<!Cuts|Vphi!>))<0.5&&<!Cuts|jet_pt!>>30&&Jet_puId>=4&&Jet_lepFilter)==0
+
+# --------------------------------------------------------------------------------------------------
+# pre-selection/skimming cut. this has been already applied during the prep step
+# --------------------------------------------------------------------------------------------------
+#hltTrigger                     = (HLT_BIT_HLT_PFMET110_PFMHT110_IDTight_v || HLT_BIT_HLT_PFMET120_PFMHT120_IDTight_v || HLT_BIT_HLT_PFMET170_HBHE_BeamHaloCleaned_v || HLT_BIT_HLT_PFMET170_NoiseCleaned_v || HLT_BIT_HLT_PFMET170_HBHECleaned_v)
+hltTrigger                      = 1
+#flags                          = (Flag_goodVertices && Flag_GlobalTightHalo2016Filter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && (Flag_eeBadScFilter || !isData ) && Flag_EcalDeadCellTriggerPrimitiveFilter)
+flags                          = 1
+
+preselectionCut                 = (H_pt>120&&<!Cuts|jet_pt0!>>60&&<!Cuts|jet_pt1!>>35&&(abs(Jet_eta[<!General|btagidx0!>])<2.4&&abs(Jet_eta[<!General|btagidx1!>])<2.4))
+
+# --------------------------------------------------------------------------------------------------
+# BASIC cuts:  Selection common to all CR and SR
+# --------------------------------------------------------------------------------------------------
+BasicCuts   = (<!Cuts|METpt!> > 170.0 && <!Cuts|DphiV_H!> > 2.0)
+
+# --------------------------------------------------------------------------------------------------
+# CONTROL regions
+# --------------------------------------------------------------------------------------------------
+
+; TT
+tt          = <!Cuts|preselectionCut!> && <!Cuts|BasicCuts!> && <!Cuts|E_OR_dMu!> && <!Cuts|NaddLep!> >= 1 && <!Cuts|FourJets!> && <!General|btag0!> > <!General|CMVAM!> && <!General|btag1!> > <!General|CMVAL!> && <!Cuts|MinDphiMET_Jet!> < 1.57
+
+; Z+LF
+Zlf         = <!Cuts|preselectionCut!> && <!Cuts|BasicCuts!> && <!Cuts|Vtype!> == 4 && <!Cuts|NaddLep!> == 0 && <!General|btag0!> < <!General|CMVAM!> && <!General|btag1!> > <!General|CMVAL!> && <!Cuts|AntiQCD!> && <!Cuts|DphiMET_tkMET!> < 0.5 && <!Cuts|NotFourJets!>
+
+; Z+HF
+Zhf         = <!Cuts|preselectionCut!> && <!Cuts|BasicCuts!> && <!Cuts|Vtype!> == 4 && <!Cuts|NaddLep!> == 0 && <!Cuts|AntiQCD!> && <!Cuts|noAdditionalJets!> && (<!Cuts|dijet_mass!> < 60 || <!Cuts|dijet_mass!> > 160) && <!General|btag0!> > <!General|CMVAT!> && <!General|btag1!> > <!General|CMVAL!> && <!Cuts|DphiMET_tkMET!> < 0.5
+
+# --------------------------------------------------------------------------------------------------
+# SIGNAL region
+# --------------------------------------------------------------------------------------------------
+;This is taken form paper definition. Not same as in Sean config (why ?)
+Sig         = <!Cuts|preselectionCut!> && <!Cuts|BasicCuts!> && <!Cuts|Vtype!> == 4 && (<!Cuts|dijet_mass!> > 60 && <!Cuts|dijet_mass!> < 160) && <!General|btag0!> > <!General|CMVAT!> && <!General|btag1!> > <!General|CMVAL!> && <!Cuts|NaddLep!> == 0 && <!Cuts|AntiQCD!> && <!Cuts|DphiMET_tkMET!> < 0.5
+
+;;QCD is not used in 2016 result
+HighPt_TT          = <!Cuts|tt!>
+HighPt_Zlight      = <!Cuts|Zlf!>
+HighPt_Zbb         = <!Cuts|Zhf!>
+
+;Signal Region
+HighPt_Signal      = <!Cuts|Sig!>
+

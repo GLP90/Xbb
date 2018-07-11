@@ -40,7 +40,7 @@ if __name__ == "__main__":
                           help="configuration file")
     parser.add_option("-t", "--regions", dest="regions", default='',
                           help="cut regions identifier")
-    parser.add_option("-s","--sampleIdentifier", dest="sampleIdentifier", default='',
+    parser.add_option("-S","--sampleIdentifier", dest="sampleIdentifier", default='',
                           help="sample identifier (no subsample!)")
     parser.add_option("-f", "--force", action="store_true", dest="force", default=False,
                           help="force overwriting of already existing datacards")
@@ -59,6 +59,9 @@ if __name__ == "__main__":
     regionsListString = opts.regions if len(opts.regions.strip())>0 else config.get('LimitGeneral', 'List')
     regions = [x.strip() for x in regionsListString.split(',') if len(x.strip()) > 0]
     useSampleIdentifiers = opts.sampleIdentifier.split(',') if len(opts.sampleIdentifier) > 0 else None
+    print("regions:", regions)
     for region in regions:
+        print("init...")
         runDC = RunDatacards(config=config, region=region, useSampleIdentifiers=useSampleIdentifiers, forceRedo=opts.force)
+        print("run...")
         runDC.run()

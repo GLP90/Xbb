@@ -105,6 +105,8 @@ class NewStackMaker:
             blindCuts = eval(self.config.get(self.configSection, 'blindCuts'))
             if self.var in blindCuts:
                 self.histogramOptions['blindCut'] = blindCuts[self.var]
+                if '{var}' in self.histogramOptions['blindCut']:
+                    self.histogramOptions['blindCut'] = self.histogramOptions['blindCut'].format(var=self.histogramOptions['treeVar'])
                 print("\x1b[31mINFO: for region {region} var {var} using the blinding cut: {cut}\x1b[0m".format(region=self.region, var=self.var, cut=self.histogramOptions['blindCut']))
 
         self.groups = {}

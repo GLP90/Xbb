@@ -204,11 +204,23 @@ class AddCollectionsModule(object):
             raise Exception("CollectionAlreadyExists")
         self.branches += collection.getBranches()
 
+    def addBranch(self, branchName, default=0.0):
+        self.branchBuffers[branchName] = array.array('d', [default])
+        self.branches.append({'name': branchName, 'formula': self.getBranch, 'arguments': branchName})
+
+    def addIntegerBranch(self, branchName, default=0):
+        self.branchBuffers[branchName] = array.array('i', [default])
+        self.branches.append({'name': branchName, 'formula': self.getBranch, 'arguments': branchName, 'type': 'i'})
+
     def getBranches(self):
         return self.branches
 
     def getBranch(self, event, arguments):
+        self.processEvent(event)
         return self.branchBuffers[arguments][0]
+
+    def setBranch(self, branchName, value):
+        self.branchBuffers[branchName][0] = value
 
     def hasBeenProcessed(self, tree):
         return tree.GetReadEntry() == self.lastEntry
