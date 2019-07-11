@@ -19,7 +19,14 @@ ROOT.gROOT.SetBatch()
 #inital
 #VarList_in ': FatJet_msoftdrop[Hbb_fjidx] FatJet_pt[Hbb_fjidx] V_pt abs(TVector2::Phi_mpi_pi(FatJet_phi[Hbb_fjidx]-V_phi)) MET_Pt abs(VHbb::deltaPhi(MET_phi,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt Sum$(Jet_Pt>25&&abs(Jet_eta)<2.9&&Jet_puId>0&&Jet_lepFilter) SA5'
 
-VarList_in = 'SYS_UD: FatJet_msoftdrop_sys_SYS_UD FatJet_pt_sys_SYS_UD V_pt abs(TVector2::Phi_mpi_pi(FatJet_phi[Hbb_fjidx]-V_phi)) MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt Sum$(Jet_pt_SYSUD>25&&abs(Jet_eta)<2.9&&Jet_puId>0&&Jet_lepFilter) SA5'
+#VarList_in = 'SYS_UD: FatJet_msoftdrop_sys_SYS_UD FatJet_pt_sys_SYS_UD V_pt abs(TVector2::Phi_mpi_pi(FatJet_phi[Hbb_fjidx]-V_phi)) MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt Sum$(Jet_pt_SYSUD>25&&abs(Jet_eta)<2.9&&Jet_puId>0&&Jet_lepFilter) SA5'
+
+
+#WlvBDTBOOSTVarsFinal_nodB
+#VarList_in =  'SYS_UD: FatJet_msoftdrop_sys_SYS_UD FatJet_pt_sys_SYS_UD MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt SA5 FatJet_pt_sys_SYS_UD/V_pt abs(FatJet_eta[Hbb_fjidx]-V_eta)'
+#
+###[WlvBDTBOOSTVarsFinal_wdB]
+VarList_in = 'SYS_UD: FatJet_msoftdrop_sys_SYS_UD FatJet_pt_sys_SYS_UD MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt SA5 FatJet_pt_sys_SYS_UD/V_pt FatJet_btagHbb[Hbb_fjidx] abs(FatJet_eta[Hbb_fjidx]-V_eta)'
 
 
 

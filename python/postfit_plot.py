@@ -29,6 +29,7 @@ class PostfitPlotter(object):
         if self.config.has_option('Fit', 'plotText'):
             self.plotText = eval(self.config.get('Fit', 'plotText'))
 
+        print('region is', self.region[0])
         if self.config.has_section('Fit:'+self.region[0]):
             if self.config.has_option('Fit:'+self.region[0], 'var'):
                 self.var = self.config.get('Fit:'+self.region[0], 'var')

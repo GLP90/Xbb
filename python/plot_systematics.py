@@ -11,6 +11,7 @@ argv = sys.argv
 parser = OptionParser()
 parser.add_option("-C", "--config", dest="config", default=[], action="append", help="configuration file")
 (opts, args) = parser.parse_args(argv)
+print(opts.config)
 config = BetterConfigParser()
 config.read(opts.config)
 
@@ -56,8 +57,12 @@ masses = ['125']
 #path_= '/mnt/t3nfs01/data01/shome/gaperrin/VHbb/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit/Nano2016/logs_Zvv2016Nano_V4_rundc_v21_Limits'
 
 #path_= '/mnt/t3nfs01/data01/shome/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_BDT0p5Cut_v20/Limits'
-path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc-boost-mva-v9/Limits'
-channels = ['Sigu_BOOST']
+#path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc-boost-mva-v9/Limits'
+path_= '/mnt/t3nfs01/data01/shome/gaperrin/VHbb/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit/BOOST_Studies/Wlv/BOOST_final/BOODT_ovb'
+#channels = ['Sigu_BOOST']
+channels = ['Sigu_BOOST','Sige_BOOST','Wlm_Wlfv11_BOOST','Wle_Wlfv11_BOOST','Wle_Whf_BOOST','Wlm_Whf_BOOST','Wle_tt_BOOST','Wlm_tt_BOOST']
+
+
        
 
 #------------------------------------------------------
@@ -200,8 +205,9 @@ for mass in masses:
                 #ROOT.gDirectory.GetListOfKeys().ls()
                 input.cd(dir_)
                 #skip _eff sys if not corresponding dc region
-                #if 'Zuu' in dir_ and '_eff_e' in syst: continue
-                #if 'Zee' in dir_ and '_eff_m' in syst: continue
+
+                if ('Sigu' in dir_ or 'Wlm' in dir_) and '_eff_e' in syst: continue
+                if ('Sige' in dir_ or 'Wle' in dir_)and '_eff_m' in syst: continue
                 #input.cd("ZllBDT_highpt")
                 print 'Ntotal is', MC
                 print 'Utotal is', MC+syst+'Up'

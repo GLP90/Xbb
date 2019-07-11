@@ -5,7 +5,6 @@ import array
 import os
 import math
 from LeptonSF import LeptonSF
-from vLeptons import vLeptonSelector
 
 class LeptonWeights(object):
 
@@ -226,6 +225,30 @@ class LeptonWeights(object):
                     wdir+'/python/json/V25/DiEleLeg2AfterIDISO_out.json' : ['DiEleLeg2AfterIDISO', 'eta_pt_ratio']
                     }
                 for j, name in jsons.iteritems():
+                    
+                    
+
+                    ####
+                    #Check if electron or muon
+                    ####
+
+                    Electron_subchannel = False
+                    if 'EIDISO_ZH_out' in j or 'ScaleFactor_etracker_80x' in j or 'DiEleLeg1AfterIDISO_out' in j or 'DiEleLeg2AfterIDISO_out' in j:
+                    Electron_subchannel = True 
+
+                    if Electron_subchannel = True:
+                        vLeptons_pt   = tree.Electron_pt
+                        vLeptons_eta  = tree.Electron_eta
+                        lepidx = getarr(tree, self.config.get('General', 'eIdx'))
+                    else:
+                        vLeptons_pt   = tree.Muon_pt
+                        vLeptons_eta  = tree.Muon_eta
+                        lepidx = getarr(tree, self.config.get('General', 'muIdx'))
+
+                    ###
+                    #Check index
+                    ###
+
 
                     self.weight = []
                     lepCorrIdentifier = j + '_' + name[0] + '_' + name[1]
@@ -233,34 +256,21 @@ class LeptonWeights(object):
                         self.leptonSF[lepCorrIdentifier] = LeptonSF(j , name[0], name[1])
                     lepCorr = self.leptonSF[lepCorrIdentifier] 
 
-                    # recompute vLeptons
-                    vLepSelector = vLeptonSelector(tree, config=self.config)
-                    Vtype = vLepSelector.getVtype()
-                    vLeptons = vLepSelector.getVleptons()
-                            
-                    # cross check vtypes
-                    if Vtype != tree.Vtype:
-                        print "\x1b[97m\x1b[41mVtype mismatch!!!!!\x1b[0m"
-                        print zMuons, zElectrons, wMuons, wElectrons
-                        print "vLeptons:", vLeptons
-                        raise Exception("VtypeMismatch")
-
                     #2-D binned SF
                     if not j.find('trk_SF_Run') != -1 and not j.find('EfficienciesAndSF_dZ_numH') != -1:
                         if 'abseta' in  name[1]:
-                            self.weight.append(lepCorr.get_2D(eta=abs(vLeptons[0].eta), pt=vLeptons[0].pt))
-                            self.weight.append(lepCorr.get_2D(eta=abs(vLeptons[1].eta), pt=vLeptons[1].pt))
+                            self.weight.append(lepCorr.get_2D(eta=abs(vLeptons_eta[lepidx[0]]), vLeptons_pt[lepidx[0]]))
+                            self.weight.append(lepCorr.get_2D(eta=abs(vLeptons_eta[lepidx[1]]), vLeptons_pt[lepidx[1]]))
                         else:
-                            self.weight.append(lepCorr.get_2D(eta=vLeptons[0].eta, pt=vLeptons[0].pt))
-                            self.weight.append(lepCorr.get_2D(eta=vLeptons[1].eta, pt=vLeptons[1].pt))
+                            self.weight.append(lepCorr.get_2D(eta=vLeptons_eta[lepidx[0]], pt=vLeptons_pt[lepidx[0]]))
+                            self.weight.append(lepCorr.get_2D(eta=vLeptons_eta[lepidx[1]], pt=vLeptons_pt[lepidx[1]]))
                     elif not j.find('trk_SF_Run') != -1 and j.find('EfficienciesAndSF_dZ_numH') != -1:
-                        #???????
-                        self.weight.append(lepCorr.get_2D(vLeptons[0].eta, vLeptons[1].eta))
-                        self.weight.append(lepCorr.get_2D(vLeptons[1].eta, vLeptons[0].eta))
+                        self.weight.append(lepCorr.get_2D(vLeptons_eta[lepidx[0]],vLeptons_eta[lepidx[1]]))
+                        self.weight.append(lepCorr.get_2D(vLeptons_eta[lepidx[1]], vLeptons_eta[lepidx[0]]))
                     #1-D binned SF
                     else:
-                        self.weight.append(lepCorr.get_1D(vLeptons[0].eta))
-                        self.weight.append(lepCorr.get_1D(vLeptons[1].eta))
+                        self.weight.append(lepCorr.get_1D(vLeptons_eta[lepidx[0]]))
+                        self.weight.append(lepCorr.get_1D(vLeptons_eta[lepidx[1]]))
 
                     if tree.Vtype == 0:
                         #IDISO
@@ -318,7 +328,7 @@ class LeptonWeights(object):
                         #IDISO
                         if j.find('EIDISO_ZH_out') != -1:
                             self.computeSF(self.branchBuffers['weight_SF_LooseIDnISO'])
-                            self.computeSF_region(self.branchBuffers['weight_SF_LooseIDnISO_B'], self.branchBuffers['weight_SF_LooseIDnISO_E'], vLeptons[0].eta, vLeptons[1].eta, 1.566)
+                            self.computeSF_region(self.branchBuffers['weight_SF_LooseIDnISO_B'], self.branchBuffers['weight_SF_LooseIDnISO_E'], vLeptons_eta[lepidx[0]], vLeptons_eta[lepidx[1]], 1.566)
                         #TRK
                         elif j.find('ScaleFactor_etracker_80x') != -1:
                             self.computeSF(self.branchBuffers['weight_SF_TRK'])
@@ -404,19 +414,6 @@ class LeptonWeights(object):
                 #raw_input()
 
             if self.channel == 'Wlv' or self.channel == 'Zvv' or len(self.channel) < 1:
-                # recompute vLeptons
-                vLepSelector = vLeptonSelector(tree, config=self.config)
-                Vtype = vLepSelector.getVtype()
-                vLeptons = vLepSelector.getVleptons()
-
-                # cross check vtypes
-                if Vtype != tree.Vtype:
-                    print "\x1b[97m\x1b[41mVtype mismatch!!!!!\x1b[0m"
-                    print "vLeptons:", vLeptons
-                    print "Vtype:", Vtype
-                    print "Vtype(tree)", tree.Vtype
-                    print "MET:",tree.MET_pt,tree.MET_Pt
-                    raise Exception("VtypeMismatch")
 
                 for branchName in ['weight_SF_TightID', 'weight_SF_TightISO', 'weight_SF_TightIDnISO', 'weight_SF_TRK', 'weight_SF_Lepton', 'eTrigSFWeight_singleEle80', 'muTrigSFWeight_singlemu']:
                     self.branchBuffers[branchName][0] = 1.0
@@ -465,7 +462,6 @@ class LeptonWeights(object):
                         }
 
                     for j, name in jsons.iteritems():
-                        #print 'yeaaaaaaaaaaaaaaaaaaaaaah2'
 
                         self.weight = []
                         lepCorrIdentifier = j + '_' + name[0] + '_' + name[1]
@@ -478,9 +474,9 @@ class LeptonWeights(object):
                         #print 'j is',j 
                         if not j.find('trk_SF_Run') != -1:
                             if 'abseta' in  name[1]:
-                                self.weight.append(lepCorr.get_2D(vLeptons[0].pt, abs(vLeptons[0].eta)))
+                                self.weight.append(lepCorr.get_2D(vLeptons_pt[lepidx[0]], abs(vLeptons_eta[lepidx[0]]))
                             else:
-                                self.weight.append(lepCorr.get_2D(vLeptons[0].pt, vLeptons[0].eta))
+                                self.weight.append(lepCorr.get_2D(vLeptons_pt[lepidx[0]], vLeptons_eta[lepidx[0]]))
                         ## SF are not applied on "main" electron but on the veto electron
                         #elif j.find('failingVeto_out') != -1 and tree.Vtype == 3:
                         #    # in case no electron has been vetoed, set SF to 1
@@ -498,7 +494,7 @@ class LeptonWeights(object):
                         #    #print 'weight is', self.weight[0][0]
                         ##1-D binned SF
                         elif j.find('trk_SF_Run') != -1:
-                            self.weight.append(lepCorr.get_1D(vLeptons[0].eta))
+                            self.weight.append(lepCorr.get_1D(vLeptons_eta[lepidx[0]]))
 
                         if tree.Vtype == 2:
                             #Not filling the branches yet because need to separate run BCDEF and GH

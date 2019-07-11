@@ -44,7 +44,6 @@ class DoubleBTagWeights(object):
             index_ = 0
             for b in self.bname:
                 self.branchBuffers[b][i] = DoubleB[index_]
-                #print 'DoubleB is', DoubleB
                 index_ += 1
         for i in range(tree.nFatjetAK08ungroomed, 6):
             for b in self.bname:
