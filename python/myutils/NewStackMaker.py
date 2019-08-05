@@ -430,7 +430,8 @@ class NewStackMaker:
             print ("WARNING: exception while adding text: ", e)
             pass
         dataNames = list(set([histogram['name'] for histogram in self.histograms if histogram['group'] == self.dataGroupName]))
-        addFlag = ''
+        addFlag = None
+        addFlag2 = None
         isZee = False
         isZmm = False
         for data_ in dataNames:
@@ -451,6 +452,44 @@ class NewStackMaker:
         elif 'Wen' in dataNames:
             addFlag = 'W(e#nu)H(b#bar{b})'
         #self.addObject(self.myText(addFlag, self.plotTextMarginLeft+(0.03 if self.is2D else 0), 0.78))
+        #print('self.region is', self.region)
+        #import sys
+        #sys.exit()
+
+        if self.region == 'Whf_BOOSTv2':
+            addFlag = 'W(l#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'tt_BOOST':
+            addFlag = 'W(l#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'Wlf_BOOSTv11':
+            addFlag = 'W(l#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'Whf_BOOSTv2_e':
+            addFlag = 'W(e#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'tt_BOOST_e':
+            addFlag = 'W(e#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'Wlf_BOOSTv11_e':
+            addFlag = 'W(e#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'Whf_BOOSTv2_m':
+            addFlag = 'W(#mu#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'tt_BOOST_m':
+            addFlag = 'W(#mu#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+        elif self.region == 'Wlf_BOOSTv11_m':
+            addFlag = 'W(#mu#nu)H(b#bar{b})'
+            addFlag2 = 'Boosted Analysis'
+          
+        if addFlag2:
+            if not addFlag in self.additionalTextLines:
+                self.additionalTextLines.insert(0,addFlag)
+        if addFlag:
+            if not addFlag2 in self.additionalTextLines:
+                self.additionalTextLines.insert(0,addFlag2)
 
         try:
             for labelName, label in self.plotLabels.iteritems():
@@ -460,7 +499,8 @@ class NewStackMaker:
 
         try:
             for j, additionalTextLine in enumerate(self.additionalTextLines):
-                self.addObject(self.myText(additionalTextLine, self.plotTextMarginLeft, 0.73-0.03*j, 0.6))
+                #self.addObject(self.myText(additionalTextLine, self.plotTextMarginLeft, 0.73-0.03*j, 0.6))
+                self.addObject(self.myText(additionalTextLine, self.plotTextMarginLeft, 0.79-0.04*j, 0.6))
         except Exception as e:
             print(e)
 
