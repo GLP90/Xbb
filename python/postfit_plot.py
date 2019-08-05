@@ -29,6 +29,21 @@ class PostfitPlotter(object):
         if self.config.has_option('Fit', 'plotText'):
             self.plotText = eval(self.config.get('Fit', 'plotText'))
 
+        self.x_axis = None
+        if self.config.has_option('Fit:'+self.region[0], 'x_axis'):
+            if  isinstance(eval(self.config.get('Fit:'+self.region[0], 'x_axis')), list):
+                self.x_axis = array.array('d', eval(self.config.get('Fit', 'x_axis')))
+            else: 
+                x_axis = self.config.get('Fit:'+self.region[0], 'x_axis')
+                x_axis_list = x_axis.split(',')
+                nbins = int(x_axis_list[0])
+                x_low = float(x_axis_list[1])
+                x_high = float(x_axis_list[2])
+                import numpy
+                self.x_axis = array.array('d', numpy.arange(x_low, x_high,(x_high-x_low)/(nbins)))
+                self.x_axis.append(x_high)
+                print(self.x_axis)
+
         print('region is', self.region[0])
         if self.config.has_section('Fit:'+self.region[0]):
             if self.config.has_option('Fit:'+self.region[0], 'var'):
@@ -37,6 +52,8 @@ class PostfitPlotter(object):
                 self.blindBins = eval(self.config.get('Fit:'+self.region[0], 'blindBins'))
             if self.config.has_option('Fit:'+self.region[0], 'plotText'):
                 self.plotText += eval(self.config.get('Fit:'+self.region[0],'plotText'))
+        #print(self.plotText)
+        #sys.exit()
 
     def prepare(self):
         self.dcDict = eval(self.config.get('LimitGeneral','Dict'))
@@ -125,6 +142,36 @@ class PostfitPlotter(object):
         #print("DEBUG: -->", histogram, histogram.Integral())
         return histogram
 
+    def rebinShape(self,histogram):
+        histogram.SaveAs("before.root")
+        if isinstance(histogram, ROOT.TGraphAsymmErrors):
+            x_axis = self.x_axis
+            p_x = array.array('d', [0.0])
+            p_y = array.array('d', [0.0])
+            nbins = histogram.GetN()
+            #if nbins != len(x_axis)-1:
+            #    print('@ERROR: x_axis has a different number of bins than the shape')
+            #    print(nbins)
+            #    sys.exit()
+            
+            for i in range(len(x_axis)-1):
+                x = (x_axis[i] + x_axis[i+1])/2
+                x_low = x - x_axis[i] 
+                x_high = x_axis[i+1] -x
+                histogram.GetPoint(i, p_x, p_y)
+                histogram.SetPoint(i, x, p_y[0])
+                histogram.SetPointEXlow(i, x_low)
+                histogram.SetPointEXhigh(i, x_high)
+            histogram.SaveAs("after.root")
+            return histogram
+        else:
+            h = ROOT.TH1D(histogram.GetName(),histogram.GetName(), len(self.x_axis)-1, self.x_axis)
+            for b in range(1,histogram.GetXaxis().GetNbins()+1):
+                content = histogram.GetBinContent(b)
+                h.SetBinContent(b, content)
+            #h.SaveAs("after.root")
+            return h
+
     def run(self):
 
         self.stack = StackMaker(self.config, self.var, self.region[0], True, self.setup, '_', title=self.title)
@@ -133,7 +180,11 @@ class PostfitPlotter(object):
         # add MC
         print("INFO: setup = \x1b[31m", self.setup, "\x1b[0m")
         for process in self.setup:
-            histogram = self.getShape(self.dcDict[process])
+
+            if self.x_axis:
+                histogram = self.rebinShape(self.getShape(self.dcDict[process]))
+            else: 
+                histogram = self.getShape(self.dcDict[process])
             if histogram:
                 self.stack.histograms.append({
                         'name': process, 
@@ -171,7 +222,10 @@ class PostfitPlotter(object):
         print("TOTAL: s/sqrt(b):", "%1.3f"%sum_s_over_sqrtb, " s:",sum_s, " b:",sum_b, " med[Z]=sqrt(q_A)=", sum_med_z_a)
         
         # add DATA
-        dataHistogram = self.getShape("data") 
+        if self.x_axis:
+            dataHistogram = self.rebinShape(self.getShape("data"))
+        else:
+            dataHistogram = self.getShape("data")
         pointX = array.array('d', [0.0, 0.0])
         pointY = array.array('d', [0.0, 0.0])
 
@@ -181,6 +235,8 @@ class PostfitPlotter(object):
             dataHistogram.GetPoint(i, pointX, pointY)
             dataIntegral += pointY[0]
             if int(pointX[0]+1) in self.blindBins:
+                dataHistogram.SetPoint(i, -100, -100)
+            if self.x_axis and  len(self.blindBins) > 0 and i >= min(self.blindBins):
                 dataHistogram.SetPoint(i, -100, -100)
 
         print("DATA:", dataIntegral, "MC:", sum_s+sum_b)

@@ -26,8 +26,19 @@ ROOT.gROOT.SetBatch()
 #VarList_in =  'SYS_UD: FatJet_msoftdrop_sys_SYS_UD FatJet_pt_sys_SYS_UD MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt SA5 FatJet_pt_sys_SYS_UD/V_pt abs(FatJet_eta[Hbb_fjidx]-V_eta)'
 #
 ###[WlvBDTBOOSTVarsFinal_wdB]
-VarList_in = 'SYS_UD: FatJet_msoftdrop_sys_SYS_UD FatJet_pt_sys_SYS_UD MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt SA5 FatJet_pt_sys_SYS_UD/V_pt FatJet_btagHbb[Hbb_fjidx] abs(FatJet_eta[Hbb_fjidx]-V_eta)'
+#VarList_in = 'SYS_UD: FatJet_msoftdrop_sys_SYS_UD FatJet_pt_sys_SYS_UD MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) V_mt SA5 FatJet_pt_sys_SYS_UD/V_pt FatJet_btagHbb[Hbb_fjidx] abs(FatJet_eta[Hbb_fjidx]-V_eta)'
 
+##
+#resolved debug BDT
+
+#VarList_in:  H_mass_noFSR H_pt_noFSR V_pt TVector2::Phi_mpi_pi(H_phi_noFSR-V_phi) Jet_btagCMVA[hJidxCMVA[1]] MET_Pt abs(VHbb::deltaPhi(MET_Phi,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) top_mass V_mt Sum$(Jet_Pt>25&&abs(Jet_eta)<2.9&&Jet_puId>0&&Jet_lepFilter&&Iteration$!=<!General|btagidx0!>&&Iteration$!=<!General|btagidx1!>) SA5
+
+#bug in met, jet pt
+#VarList_in = 'SYS_UD: H_mass_noFSR_SYS_UD H_pt_noFSR_SYS_UD V_pt TVector2::Phi_mpi_pi(H_phi_noFSR_SYS_UD-V_phi) Jet_btagCMVA[hJidxCMVA[1]] MET_pt_SYSUD abs(VHbb::deltaPhi(MET_phi_SYSUD,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) top_mass V_mt Sum$(Jet_pt_SYSUD>25&&abs(Jet_eta)<2.9&&Jet_puId>0&&Jet_lepFilter&&Iteration$!=<!General|btagidx0!>&&Iteration$!=<!General|btagidx1!>) SA5'
+
+#VarList_in = 'SYS_UD: H_mass_noFSR_SYS_UD H_pt_noFSR_SYS_UD V_pt TVector2::Phi_mpi_pi(H_phi_noFSR_SYS_UD-V_phi) Jet_btagCMVA[hJidxCMVA[1]] MET_Pt abs(VHbb::deltaPhi(MET_Phi,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) top_mass V_mt Sum$(Jet_Pt>25&&abs(Jet_eta)<2.9&&Jet_puId>0&&Jet_lepFilter&&Iteration$!=<!General|btagidx0!>&&Iteration$!=<!General|btagidx1!>) SA5'
+
+VarList_in = 'SYS_UD: H_mass_noFSR_SYS_UD H_pt_noFSR_SYS_UD V_pt TVector2::Phi_mpi_pi(H_phi_noFSR_SYS_UD-V_phi) Jet_btagCMVA[hJidxCMVA[1]] MET_Pt abs(VHbb::deltaPhi(MET_Phi,Alt$((Vtype==2)*Muon_phi[VMuonIdx[0]],0)+Alt$((Vtype==3)*Electron_phi[VElectronIdx[0]],0))) top_mass V_mt Sum$(Jet_Pt>25&&abs(Jet_eta)<2.9&&Jet_puId>0&&Jet_lepFilter&&Iteration$!=<!General|btagidx0!>&&Iteration$!=<!General|btagidx1!>) SA5'
 
 
 #List of the systematics
@@ -62,9 +73,9 @@ JECsys = [
         'jesPileUpMuZero',
         'jesPileUpEnvelope',
         'minmax',
-        #for Boost
-        'jms',
-        'jmr',
+        ##for Boost
+        #'jms',
+        #'jmr',
 
     ]
 

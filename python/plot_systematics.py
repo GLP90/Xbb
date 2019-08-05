@@ -58,9 +58,22 @@ masses = ['125']
 
 #path_= '/mnt/t3nfs01/data01/shome/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_BDT0p5Cut_v20/Limits'
 #path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc-boost-mva-v9/Limits'
-path_= '/mnt/t3nfs01/data01/shome/gaperrin/VHbb/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit/BOOST_Studies/Wlv/BOOST_final/BOODT_ovb'
-#channels = ['Sigu_BOOST']
-channels = ['Sigu_BOOST','Sige_BOOST','Wlm_Wlfv11_BOOST','Wle_Wlfv11_BOOST','Wle_Whf_BOOST','Wlm_Whf_BOOST','Wle_tt_BOOST','Wlm_tt_BOOST']
+#path_= '/mnt/t3nfs01/data01/shome/gaperrin/VHbb/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit/BOOST_Studies/Wlv/BOOST_final/BOODT_ovb'
+#path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_resolved_ovr_110729_v5/Limits'
+#path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_resolved_ovr_110729_v5/Limits'
+#path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_resolved_ovr_110729_v7/Limits'
+#path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_resolved_ovr_110729_v8/Limits'
+#path_= '/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_resolved_ovr_110729_v10/Limits'
+#channels = ['Wlm_SR_HighPt_ovRESOLVED']
+
+path_='/work/gaperrin/VHbb2018/CMSSW_10_1_0/src/Xbb/python/logs_Wlv2016_v2/rundc_JMR_var/Limits'
+channels = ['vhbb_DC_TH_Sigu_BOOST']
+
+
+#BOOST
+channels = ['Sigu_BOOST']
+
+#channels = ['Sigu_BOOST','Sige_BOOST','Wlm_Wlfv11_BOOST','Wle_Wlfv11_BOOST','Wle_Whf_BOOST','Wlm_Whf_BOOST','Wle_tt_BOOST','Wlm_tt_BOOST']
 
 
        
@@ -86,7 +99,7 @@ setup = eval(config.get('LimitGeneral','setup'))
 Dict = eval(config.get('LimitGeneral','Dict'))
 #MCs = [Dict[s] for s in setup]
 #for test 
-MCs = ['TT']
+MCs = ['WH_hbb', 'TT']
 
 sys_BDT= eval(config.get('LimitGeneral','sys_BDT'))
 #sys_BDT= ['CUETP8M1']+eval(config.get('LimitGeneral','sys_BDT'))
@@ -267,7 +280,9 @@ for mass in masses:
                     ROOT.gPad.SetTicks(1,1)
 
                     nBins = Utotal.GetNbinsX()
-                    xMin = Utotal.GetXaxis().GetBinLowEdge(0)
+                    #xMin = Utotal.GetXaxis().GetBinLowEdge(1)
+                    #xMax = Utotal.GetXaxis().GetBinUpEdge(nBins-2)
+                    xMin = Utotal.GetXaxis().GetBinLowEdge(1)
                     xMax = Utotal.GetXaxis().GetBinUpEdge(nBins)
                     ratioU, errorU  = getRatio(Utotal,Ntotal,xMin,xMax)
                     ratioD, errorD  = getRatio(Dtotal,Ntotal,xMin,xMax)
@@ -279,7 +294,8 @@ for mass in masses:
 
 
                     ratioU.SetStats(0)
-                    ratioU.GetYaxis().SetRangeUser(0.9,1.1)
+                    #ratioU.GetYaxis().SetRangeUser(0.9,1.1)
+                    ratioU.GetYaxis().SetRangeUser(0.6,1.4)
                     ratioU.GetYaxis().SetNdivisions(502,0)
                     ratioD.SetStats(0)
                     ratioD.GetYaxis().SetRangeUser(0.9,1.1)
@@ -309,9 +325,10 @@ for mass in masses:
                 #name = outpath+Abin+'_M'+mass+'_'+channel+'_'+MC+syst+'.png'
                 #c.Print(name)
                 name = outpath+channel+'/'+'systPlot_'+channel+'_M'+mass+'_'+channel+'_'+MC+syst+'.pdf'
-                #print 'name is', name
+                print 'name is', name
                 #if not 'EWK' in name: sys.exit()
-                c.Print(name.replace('.pdf','.png'))
+                #c.Print(name.replace('.pdf','.png'))
+                c.SaveAs(name)
 
 
         input.Close()
