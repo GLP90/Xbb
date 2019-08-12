@@ -54,7 +54,8 @@ class NewStackMaker:
             if self.config.has_option('Plot_general', 'title'):
                 title = eval(self.config.get('Plot_general', 'title'))
 
-        self.plotTitle = title if title else "CMS"
+        #self.plotTitle = title if title else "CMS"
+        self.plotTitle = "" 
 
         self.rebin = 1
         self.histogramOptions = {

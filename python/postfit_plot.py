@@ -218,7 +218,9 @@ class PostfitPlotter(object):
             sum_b += b
             sum_med_z_a += 2.0* ( (s+b) * math.log(1.0 + s/b) - s) if s > 0 else 0.0
         sum_s_over_sqrtb = math.sqrt(sum_s_over_sqrtb)
-        sum_med_z_a = math.sqrt(sum_med_z_a)
+
+        if sum_med_z_a >= 0.:
+            sum_med_z_a = math.sqrt(sum_med_z_a)
         print("TOTAL: s/sqrt(b):", "%1.3f"%sum_s_over_sqrtb, " s:",sum_s, " b:",sum_b, " med[Z]=sqrt(q_A)=", sum_med_z_a)
         
         # add DATA
