@@ -360,7 +360,7 @@ class NewStackMaker:
         self.legends['ratio'].AddEntry(self.ratioError, self.mcUncertaintyLegend,"f")
         self.legends['ratio'].Draw() 
         if not self.blind:
-            self.addObject(self.myText("#chi^{2}_{ }#lower[0.1]{/^{}#it{dof} = %.2f}"%(chiScore), self.plotTextMarginLeft, 0.895, 1.55))
+            #self.addObject(self.myText("#chi^{2}_{ }#lower[0.1]{/^{}#it{dof} = %.2f}"%(chiScore), self.plotTextMarginLeft, 0.895, 1.55))
             t0 = ROOT.TText()
             t0.SetTextSize(ROOT.gStyle.GetLabelSize()*2.4)
             t0.SetTextFont(ROOT.gStyle.GetLabelFont())
